@@ -8,13 +8,12 @@
     android:background="@color/white"
     tools:context=".MainActivity">
 
-    <com.zapplications.calendarview.customview.MonthView
-        android:id="@+id/monthRv"
+    <com.zapplications.calendarview.MonthlyCalendarView
+        android:id="@+id/viewMonthlyCalendar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
