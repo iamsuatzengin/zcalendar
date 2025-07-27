@@ -35,9 +35,23 @@ class MonthView @JvmOverloads constructor(
 
     fun setCalendarList(dayItems: List<DayItem>) {
         monthGridAdapter?.setSelectedPosition(NO_POSITION)
-        monthGridAdapter?.submitList(null)
-        monthGridAdapter?.submitList(dayItems)
-        requestLayout()
+        monthGridAdapter?.submitList(dayItems) {
+            updateHeight()
+        }
+    }
+
+    private fun updateHeight() {
+        val currentList = monthGridAdapter?.currentList
+        val childHeight = layoutManager?.getChildAt(
+            currentList?.indexOfFirst { it is DayItem.Day } ?: -1
+        )?.height
+
+        childHeight?.let { cHeight ->
+            val lp = layoutParams
+            val size = currentList?.size ?: 0
+            lp.height = cHeight * (size / SPAN_COUNT)
+            layoutParams = lp
+        }
     }
 
     companion object {
