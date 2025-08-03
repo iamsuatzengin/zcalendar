@@ -4,9 +4,14 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.zapplications.calendarview.config.CalendarViewConfig
+import com.zapplications.calendarview.customview.MonthView
 import com.zapplications.core.data.DayItem
 
-class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
+class MonthGridAdapter(
+    private val calendarViewConfig: CalendarViewConfig,
+    private val monthViewClickListener: MonthView.MonthViewClickListener,
+) : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
 
     companion object {
         const val IS_SELECTED_CHANGED = "is.selected.changed"
@@ -14,7 +19,10 @@ class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdap
 
     private var selectedPosition = RecyclerView.NO_POSITION
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MonthGridViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MonthGridViewHolder.from(
+        parent = parent,
+        viewConfig = calendarViewConfig
+    )
 
     override fun onBindViewHolder(holder: MonthGridViewHolder, position: Int) {
         val item = getItem(position)
@@ -23,6 +31,7 @@ class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdap
             onDayClick = {
                 if (selectedPosition != position && item is DayItem.Day) {
                     handleOnSelectItem(position)
+                    monthViewClickListener.onSingleDayClick(item)
                 }
             }
         )
@@ -31,7 +40,7 @@ class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdap
     override fun onBindViewHolder(
         holder: MonthGridViewHolder,
         position: Int,
-        payloads: List<Any?>
+        payloads: List<Any?>,
     ) {
         if (payloads.isNotEmpty()) {
             val item = getItem(position)
@@ -48,7 +57,7 @@ class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdap
         super.onBindViewHolder(holder, position, payloads)
     }
 
-    private fun handleOnSelectItem(position: Int) {
+    fun handleOnSelectItem(position: Int) {
         val list = currentList.toMutableList()
         if (selectedPosition != RecyclerView.NO_POSITION) {
             val oldPosition = selectedPosition
@@ -67,7 +76,24 @@ class MonthGridAdapter : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdap
         selectedPosition = position
     }
 
+    fun handleOnSelectItem(oldItem: DayItem.Day?, newItem: DayItem.Day?) {
+        val list = currentList.toMutableList()
+
+        val oldPosition = getDayItemPosition(oldItem)
+        val oldItemIsSelectedFalse = (list[oldPosition] as? DayItem.Day)?.copy(isSelected = false)
+        list[oldPosition] = oldItemIsSelectedFalse ?: list[oldPosition]
+
+        val newPosition = getDayItemPosition(newItem)
+        list[newPosition] = newItem
+
+        submitList(list)
+        selectedPosition = newPosition
+    }
+
     fun setSelectedPosition(position: Int) {
         selectedPosition = position
     }
+
+    fun getDayItemPosition(item: DayItem.Day?) =
+        currentList.indexOfFirst { it is DayItem.Day && it.date == item?.date && it.dayOfMonth == item.dayOfMonth }
 }

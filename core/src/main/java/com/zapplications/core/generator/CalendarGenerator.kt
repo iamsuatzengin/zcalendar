@@ -63,6 +63,7 @@ class CalendarGenerator {
     fun getMonthDays(
         currentDate: LocalDate,
         firstDayOfWeek: DayOfWeek,
+        selectedDate: LocalDate? = null,
         disabledDates: Set<LocalDate>? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
     ): List<DayItem> {
@@ -86,7 +87,7 @@ class CalendarGenerator {
                     date = currentDate,
                     dayOfMonth = dayOfMonth,
                     events = events,
-                    isSelected = false,
+                    isSelected = currentDate == selectedDate,
                     isEnabled = isEnabled
                 )
             )

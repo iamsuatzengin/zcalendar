@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.zapplications.calendarview.MonthlyCalendarView
-import com.zapplications.core.generator.CalendarGenerator
+import com.zapplications.calendarview.config.CalendarViewConfig
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -22,17 +22,25 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val calendarGenerator = CalendarGenerator()
-        val list = calendarGenerator.getMonthDays(
-            currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-            firstDayOfWeek = DayOfWeek.MONDAY
-        )
 
+        initMonthlyCalendarView()
+    }
+
+    private fun initMonthlyCalendarView() {
         val rv = findViewById<MonthlyCalendarView>(R.id.viewMonthlyCalendar)
-        rv.apply {
-            setDaysOfWeek(calendarGenerator.getDaysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY))
-            this.currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-            setCalendarList(list)
-        }
+
+        rv.setCalendarViewConfig(
+            CalendarViewConfig(
+                disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
+                showQuickSelectionBar = false
+            )
+        ).setDisabledDates(
+            setOf(
+                LocalDate(2025, 8, 18),
+                LocalDate(2025, 7, 15),
+            )
+        ).setCurrentDate(
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        ).buildCalendar()
     }
 }

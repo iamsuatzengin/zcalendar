@@ -1,15 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clQuickSelectionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginHorizontal="8dp">
+
+        <TextView
+            android:id="@+id/tvToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/calendar_quick_selection_button_bg"
+            android:padding="10dp"
+            android:text="Today"
+            android:textColor="@color/color_day_grid_item"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTomorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/calendar_quick_selection_button_bg"
+            android:padding="10dp"
+            android:text="Tomorrow"
+            android:textColor="@color/color_day_grid_item"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/tvToday"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvNextWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/calendar_quick_selection_button_bg"
+            android:padding="10dp"
+            android:text="Next week"
+            android:textColor="@color/color_day_grid_item"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/tvTomorrow"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvToday, tvTomorrow, tvNextWeek"
+            app:flow_horizontalAlign="start"
+            app:flow_horizontalGap="16dp"
+            app:flow_wrapMode="aligned"
+            app:flow_maxElementsWrap="4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.zapplications.calendarview.customview.MonthlyCalendarHeaderView
         android:id="@+id/viewCalendarHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical" />
 
     <com.zapplications.calendarview.customview.DaysOfWeekView

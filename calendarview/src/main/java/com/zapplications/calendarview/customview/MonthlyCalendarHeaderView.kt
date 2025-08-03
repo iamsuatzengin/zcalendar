@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.zapplications.calendarview.databinding.ViewMonthlyCalendarHeaderBinding
+import kotlinx.datetime.Month
+import java.time.format.TextStyle
+import java.util.Locale
 
 class MonthlyCalendarHeaderView @JvmOverloads constructor(
     context: Context,
@@ -15,20 +18,27 @@ class MonthlyCalendarHeaderView @JvmOverloads constructor(
     private val binding =
         ViewMonthlyCalendarHeaderBinding.inflate(LayoutInflater.from(context), this)
 
-    var currentMonth: String?
-        get() = binding.tvCurrentMonth.text.toString()
+    var currentMonthDisplayName: String? = null
+
+    var currentMonth: Month? = null
         set(value) {
-            binding.tvCurrentMonth.text = value
+            field = value
+            currentMonthDisplayName = value?.getDisplayName(TextStyle.FULL, Locale.getDefault())
+            setCurrentMonthYear()
         }
 
-    var currentYear: String?
-        get() = binding.tvCurrentYear.text.toString()
+    var currentYear: Int? = null
         set(value) {
-            binding.tvCurrentYear.text = value
+            field = value
+            setCurrentMonthYear()
         }
 
     init {
-        orientation = VERTICAL
+        orientation = HORIZONTAL
+    }
+
+    private fun setCurrentMonthYear() {
+        binding.tvCurrentMonth.text = "$currentMonthDisplayName $currentYear"
     }
 
     fun onPreviousMonthClick(action: () -> Unit) {

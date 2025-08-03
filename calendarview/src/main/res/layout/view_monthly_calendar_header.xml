@@ -3,49 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:parentTag="android.widget.LinearLayout">
+
+    <ImageView
+        android:id="@+id/btn_previous_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/content_desc_previous_month"
+        android:src="@drawable/ic_chevron_left" />
 
     <TextView
         android:id="@+id/tv_current_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginBottom="6dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:textColor="@color/color_month_title_monthly_calendar"
-        android:textSize="24sp"
-        tools:text="Haziran" />
+        android:textSize="20sp"
+        tools:text="Haziran, 2025" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/btn_next_month"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center_vertical"
 
-        <TextView
-            android:id="@+id/tv_current_year"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginBottom="16dp"
-            android:layout_weight="1"
-            android:textColor="@color/color_month_title_monthly_calendar"
-            android:textSize="16sp"
-            tools:text="2025" />
-
-        <ImageView
-            android:id="@+id/btn_previous_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:contentDescription="@string/content_desc_previous_month"
-            android:src="@drawable/ic_chevron_left" />
-
-        <ImageView
-            android:id="@+id/btn_next_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:contentDescription="@string/context_desc_next_month"
-            android:src="@drawable/ic_chevron_right" />
-    </LinearLayout>
+        android:contentDescription="@string/context_desc_next_month"
+        android:src="@drawable/ic_chevron_right" />
 </merge>

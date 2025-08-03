@@ -5,10 +5,11 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zapplications.calendarview.adapter.monthgrid.MonthGridAdapter
+import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.core.data.DayItem
 
 class MonthView @JvmOverloads constructor(
-    private val context: Context,
+    context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : RecyclerView(context, attrs, defStyleAttr) {
@@ -20,21 +21,25 @@ class MonthView @JvmOverloads constructor(
         }
 
     init {
-        initView()
-    }
-
-    private fun initView() {
         layoutManager = GridLayoutManager(context, SPAN_COUNT)
         itemAnimator = null
         isNestedScrollingEnabled = false
         overScrollMode = OVER_SCROLL_NEVER
         setHasFixedSize(true)
-
-        monthGridAdapter = MonthGridAdapter()
     }
 
-    fun setCalendarList(dayItems: List<DayItem>) {
-        monthGridAdapter?.setSelectedPosition(NO_POSITION)
+    fun setAdapterWithConfig(
+        calendarViewConfig: CalendarViewConfig,
+        monthViewClickListener: MonthViewClickListener
+    ) {
+        monthGridAdapter = MonthGridAdapter(
+            calendarViewConfig = calendarViewConfig,
+            monthViewClickListener = monthViewClickListener
+        )
+    }
+
+    fun setCalendarList(dayItems: List<DayItem>, initialSelectedPosition: Int?) {
+        monthGridAdapter?.setSelectedPosition(initialSelectedPosition ?: NO_POSITION)
         monthGridAdapter?.submitList(dayItems) {
             updateHeight()
         }
@@ -56,5 +61,9 @@ class MonthView @JvmOverloads constructor(
 
     companion object {
         const val SPAN_COUNT = 7
+    }
+
+    fun interface MonthViewClickListener {
+        fun onSingleDayClick(dayItem: DayItem.Day)
     }
 }

@@ -9,4 +9,6 @@
     <color name="color_day_selected">#235AFF</color>
     <color name="color_day_selected_bg">#F6F8FF</color>
     <color name="color_event_dot_orange">#FF9500</color>
+    <color name="color_disabled_text_red">#EF5350</color>
+    <color name="color_calendar_quick_selection_bar_bg">#F5F5F5</color>
 </resources>
