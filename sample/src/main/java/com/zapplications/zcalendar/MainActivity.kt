@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         rv.setCalendarViewConfig(
             CalendarViewConfig(
                 disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
-                showQuickSelectionBar = false
+                showQuickSelectionBar = true
             )
         ).setDisabledDates(
             setOf(
@@ -42,5 +42,9 @@ class MainActivity : AppCompatActivity() {
         ).setCurrentDate(
             Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         ).buildCalendar()
+
+        rv.setOnDateSelectedListener {
+            println("Selected date: $it")
+        }
     }
 }

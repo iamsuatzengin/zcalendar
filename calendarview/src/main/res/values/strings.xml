@@ -2,4 +2,8 @@
 <resources>
     <string name="content_desc_previous_month">Previous month</string>
     <string name="context_desc_next_month">Next month</string>
+
+    <string name="button_text_quick_selection_bar_today">Today</string>
+    <string name="button_text_quick_selection_bar_tomorrow">Tomorrow</string>
+    <string name="button_text_quick_selection_bar_next_week">Next week</string>
 </resources>

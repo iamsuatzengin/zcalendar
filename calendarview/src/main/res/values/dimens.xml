@@ -14,4 +14,7 @@
     <dimen name="day_grid_item_corner_radius">8dp</dimen>
     <dimen name="bottom_sheet_corner_radius">10dp</dimen>
     <dimen name="event_card_corner_radius">10dp</dimen>
+    <dimen name="flow_horizontal_gap">16dp</dimen>
+    <dimen name="quick_selection_button_padding">10dp</dimen>
+    <dimen name="text_size_quick_selection_button">16sp</dimen>
 </resources>
