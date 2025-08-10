@@ -77,23 +77,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         }
     }
 
-    private fun setSelectedDateAfterQuickSelection(date: LocalDate) {
-        val oldSelectedDate = selectedDate
-        selectedDate = selectedDate?.copy(
-            date = date,
-            dayOfMonth = date.dayOfMonth,
-            isSelected = true
-        )
-
-        if (currentDate?.month != date.month) {
-            currentDate = selectedDate?.date
-            buildCalendar()
-        } else {
-            currentDate = selectedDate?.date
-            monthAdapter?.handleOnSelectItem(oldSelectedDate, selectedDate)
-        }
-    }
-
     fun setFirstDayOfWeek(firstDayOfWeek: DayOfWeek): MonthlyCalendarView {
         this.firstDayOfWeek = firstDayOfWeek
         return this
@@ -107,6 +90,15 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
+
+    /**
+     * Set the current date or initially the selected date.
+     *
+     * This will also update the displayed month and year in the header.
+     *
+     * @param currentDate The [LocalDate] to set as the current date.
+     * @return This [MonthlyCalendarView] instance for chaining.
+     */
     fun setCurrentDate(currentDate: LocalDate): MonthlyCalendarView {
         this.currentDate = currentDate
         return this
@@ -144,12 +136,15 @@ class MonthlyCalendarView @JvmOverloads constructor(
         val daysOfWeeks = calendarGenerator.getDaysOfWeek(firstDayOfWeek = firstDayOfWeek)
         binding.viewDaysOfWeekTitles.setDaysOfWeek(daysOfWeeks)
 
+        val current = currentDate ?: getLocalCurrentDate()
+        currentDate = current
+
         val dayItems = calendarGenerator.getMonthDays(
-            currentDate = currentDate ?: getLocalCurrentDate(),
+            currentDate = current,
             firstDayOfWeek = firstDayOfWeek,
             eventDates = eventDates,
             disabledDates = disabledDates,
-            selectedDate = selectedDate?.date ?: getLocalCurrentDate()
+            selectedDate = selectedDate?.date ?: current
         )
 
         selectedDate.ifNull {
@@ -182,6 +177,23 @@ class MonthlyCalendarView @JvmOverloads constructor(
                 setSelectedDateAfterQuickSelection(it)
             }
         )
+    }
+
+    private fun setSelectedDateAfterQuickSelection(date: LocalDate) {
+        val oldSelectedDate = selectedDate
+        selectedDate = selectedDate?.copy(
+            date = date,
+            dayOfMonth = date.dayOfMonth,
+            isSelected = true
+        )
+
+        if (currentDate?.month != date.month) {
+            currentDate = selectedDate?.date
+            buildCalendar()
+        } else {
+            currentDate = selectedDate?.date
+            monthAdapter?.handleOnSelectItem(oldSelectedDate, selectedDate)
+        }
     }
 
     override fun onSingleDayClick(dayItem: DayItem.Day) {
