@@ -63,11 +63,12 @@ class CalendarGenerator {
     fun getMonthDays(
         currentDate: LocalDate,
         firstDayOfWeek: DayOfWeek,
+        minDate: LocalDate? = null,
+        maxDate: LocalDate? = null,
         selectedDate: LocalDate? = null,
         disabledDates: Set<LocalDate>? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
     ): List<DayItem> {
-
         val month = currentDate.month
         val year = currentDate.year
         val dayGridItems = mutableListOf<DayItem>()
@@ -80,7 +81,9 @@ class CalendarGenerator {
         val currentMonthLength = month.getLength(isLeapYear = year.isLeapYear())
         for (dayOfMonth in FIRST_DAY_OF_MONTH_NUMBER..currentMonthLength) {
             val currentDate = LocalDate(year, month.number, dayOfMonth)
-            val isEnabled = !(disabledDates?.contains(currentDate) ?: false)
+            val checkMinDate = !(minDate != null && currentDate < minDate)
+            val checkMaxDate = !(maxDate != null && currentDate > maxDate)
+            val isEnabled = !(disabledDates?.contains(currentDate) ?: false) && checkMinDate && checkMaxDate
             val events = eventDates?.get(currentDate)
             dayGridItems.add(
                 DayItem.Day(

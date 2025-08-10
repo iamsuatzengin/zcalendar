@@ -48,4 +48,12 @@ class MonthlyCalendarHeaderView @JvmOverloads constructor(
     fun onNextMonthClick(action: () -> Unit) {
         binding.btnNextMonth.setOnClickListener { action() }
     }
+
+    internal fun setPreviousButtonIsEnabled(isEnabled: Boolean) {
+        binding.btnPreviousMonth.isEnabled = isEnabled
+    }
+
+    internal fun setNextButtonIsEnabled(isEnabled: Boolean) {
+        binding.btnNextMonth.isEnabled = isEnabled
+    }
 }

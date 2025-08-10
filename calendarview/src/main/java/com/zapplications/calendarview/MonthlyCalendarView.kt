@@ -13,6 +13,8 @@ import com.zapplications.calendarview.model.QuickSelectionButtonModel
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.data.Event
 import com.zapplications.core.extension.ifNull
+import com.zapplications.core.extension.isSameMonthOrAfter
+import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -47,6 +49,12 @@ class MonthlyCalendarView @JvmOverloads constructor(
     var disabledDates: Set<LocalDate>? = null
         private set
 
+    var minDate: LocalDate? = null
+        private set
+
+    var maxDate: LocalDate? = null
+        private set
+
     var currentDate: LocalDate? = null
         private set(value) {
             field = value
@@ -68,11 +76,27 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     private fun initView() {
         binding.viewCalendarHeader.onPreviousMonthClick {
-            currentDate = currentDate?.minus(1, DateTimeUnit.MONTH)
+            val previousDate = currentDate?.minus(1, DateTimeUnit.MONTH)
+
+            if (previousDate != null && minDate != null && previousDate.isSameMonthOrBefore(minDate)) {
+                binding.viewCalendarHeader.setPreviousButtonIsEnabled(false)
+            }
+
+            currentDate = previousDate
+            binding.viewCalendarHeader.setNextButtonIsEnabled(true)
+
             buildCalendar()
         }
         binding.viewCalendarHeader.onNextMonthClick {
-            currentDate = currentDate?.plus(1, DateTimeUnit.MONTH)
+            val nextDate = currentDate?.plus(1, DateTimeUnit.MONTH)
+
+            if (nextDate != null && maxDate != null && nextDate.isSameMonthOrAfter(maxDate)) {
+                binding.viewCalendarHeader.setNextButtonIsEnabled(false)
+            }
+
+            currentDate = nextDate
+            binding.viewCalendarHeader.setPreviousButtonIsEnabled(true)
+
             buildCalendar()
         }
     }
@@ -89,7 +113,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
         return this
     }
-
 
     /**
      * Set the current date or initially the selected date.
@@ -114,6 +137,16 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     fun setDisabledDates(disabledDates: Set<LocalDate>): MonthlyCalendarView {
         this.disabledDates = disabledDates
+        return this
+    }
+
+    fun setMinDate(minDate: LocalDate): MonthlyCalendarView {
+        this.minDate = minDate
+        return this
+    }
+
+    fun setMaxDate(maxDate: LocalDate): MonthlyCalendarView {
+        this.maxDate = maxDate
         return this
     }
 
@@ -144,12 +177,13 @@ class MonthlyCalendarView @JvmOverloads constructor(
             firstDayOfWeek = firstDayOfWeek,
             eventDates = eventDates,
             disabledDates = disabledDates,
-            selectedDate = selectedDate?.date ?: current
+            selectedDate = selectedDate?.date ?: current,
+            minDate = minDate,
+            maxDate = maxDate
         )
 
         selectedDate.ifNull {
-            selectedDate =
-                dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
+            selectedDate = dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
         }
 
         val initialSelectedPosition =

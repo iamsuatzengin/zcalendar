@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-
         android:contentDescription="@string/context_desc_next_month"
         android:src="@drawable/ic_chevron_right" />
 </merge>
