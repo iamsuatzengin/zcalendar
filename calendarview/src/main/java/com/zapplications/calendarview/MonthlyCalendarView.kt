@@ -16,6 +16,7 @@ import com.zapplications.core.extension.ifNull
 import com.zapplications.core.extension.isSameMonthOrAfter
 import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
+import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -46,9 +47,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
     var eventDates: Map<LocalDate, List<Event>>? = null
         private set
 
-    var disabledDates: Set<LocalDate>? = null
-        private set
-
     var minDate: LocalDate? = null
         private set
 
@@ -66,6 +64,8 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     var quickSelectionButtons: List<QuickSelectionButtonModel>? = null
         private set
+
+    private var dateValidator: DateValidator? = null
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
 
@@ -135,11 +135,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
-    fun setDisabledDates(disabledDates: Set<LocalDate>): MonthlyCalendarView {
-        this.disabledDates = disabledDates
-        return this
-    }
-
     fun setMinDate(minDate: LocalDate): MonthlyCalendarView {
         this.minDate = minDate
         return this
@@ -163,6 +158,11 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
+    fun setDateValidator(dateValidator: DateValidator): MonthlyCalendarView {
+        this.dateValidator = dateValidator
+        return this
+    }
+
     fun buildCalendar() {
         setAdapter()
         setQuickLinkButtons()
@@ -176,7 +176,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
             currentDate = current,
             firstDayOfWeek = firstDayOfWeek,
             eventDates = eventDates,
-            disabledDates = disabledDates,
             selectedDate = selectedDate?.date ?: current,
             minDate = minDate,
             maxDate = maxDate
@@ -195,7 +194,8 @@ class MonthlyCalendarView @JvmOverloads constructor(
         monthAdapter.ifNull {
             binding.viewMonthGrid.setAdapterWithConfig(
                 calendarViewConfig = calendarViewConfig,
-                monthViewClickListener = this@MonthlyCalendarView
+                monthViewClickListener = this@MonthlyCalendarView,
+                dateValidator = dateValidator
             )
         }
     }

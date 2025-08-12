@@ -52,8 +52,6 @@ class CalendarGenerator {
      * @param firstDayOfWeek The [DayOfWeek] to be considered as the first day of the week
      *                       (e.g., [DayOfWeek.MONDAY], [DayOfWeek.SUNDAY]). This affects
      *                       the layout of the days in the grid.
-     * @param disabledDates An optional set of [LocalDate] objects representing dates that
-     *                      should be marked as disabled in the calendar.
      * @param eventDates An optional map where keys are [LocalDate] objects and values are
      *                   lists of [EventData] associated with that date.
      * @return A [DayItem] list containing a list of [DayItem.Day]s and [DayItem.Empty] that represent the days
@@ -66,7 +64,6 @@ class CalendarGenerator {
         minDate: LocalDate? = null,
         maxDate: LocalDate? = null,
         selectedDate: LocalDate? = null,
-        disabledDates: Set<LocalDate>? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
     ): List<DayItem> {
         val month = currentDate.month
@@ -83,7 +80,7 @@ class CalendarGenerator {
             val currentDate = LocalDate(year, month.number, dayOfMonth)
             val checkMinDate = !(minDate != null && currentDate < minDate)
             val checkMaxDate = !(maxDate != null && currentDate > maxDate)
-            val isEnabled = !(disabledDates?.contains(currentDate) ?: false) && checkMinDate && checkMaxDate
+            val isEnabled = checkMinDate && checkMaxDate
             val events = eventDates?.get(currentDate)
             dayGridItems.add(
                 DayItem.Day(

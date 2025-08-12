@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.zapplications.calendarview.MonthlyCalendarView
 import com.zapplications.calendarview.config.CalendarViewConfig
+import com.zapplications.core.validator.WeekdayValidator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -34,17 +35,12 @@ class MainActivity : AppCompatActivity() {
                 disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
                 showQuickSelectionBar = false
             )
-        ).setDisabledDates(
-            setOf(
-                LocalDate(2025, 8, 18),
-                LocalDate(2025, 7, 15),
-                LocalDate(2025, 2, 2),
-                LocalDate(2025, 2, 4),
-            )
         ).setMaxDate(
             LocalDate(2025, 10, 10)
         ).setCurrentDate(
             Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        ).setDateValidator(
+            WeekdayValidator()
         ).buildCalendar()
 
         rv.setOnDateSelectedListener {

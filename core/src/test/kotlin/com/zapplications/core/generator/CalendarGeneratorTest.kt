@@ -54,7 +54,7 @@ class CalendarGeneratorTest {
 
 
     @Test
-    fun `computeLeadingEmptySlots should return 2 empty slots when month starts on Wednesday and week starts on Monday`(){
+    fun `computeLeadingEmptySlots should return 2 empty slots when month starts on Wednesday and week starts on Monday`() {
         // Given
         val firstDayOfWeek = DayOfWeek.MONDAY
         val firstDowOfMonth = DayOfWeek.WEDNESDAY
@@ -91,7 +91,8 @@ class CalendarGeneratorTest {
         val totalSlots = 35
 
         // When
-        val trailingEmptySlots = calendarGenerator.computeTrailingEmptySlots(totalSlots = totalSlots)
+        val trailingEmptySlots =
+            calendarGenerator.computeTrailingEmptySlots(totalSlots = totalSlots)
 
         // Then
         assertEquals(0, trailingEmptySlots)
@@ -103,7 +104,8 @@ class CalendarGeneratorTest {
         val totalSlots = 32
 
         // When
-        val trailingEmptySlots = calendarGenerator.computeTrailingEmptySlots(totalSlots = totalSlots)
+        val trailingEmptySlots =
+            calendarGenerator.computeTrailingEmptySlots(totalSlots = totalSlots)
 
         // Then
         assertEquals(3, trailingEmptySlots)
@@ -116,7 +118,11 @@ class CalendarGeneratorTest {
         val firstDayOfWeek = DayOfWeek.MONDAY
 
         // When
-        val days = calendarGenerator.getMonthDays(dateModel, firstDayOfWeek)
+        val days = calendarGenerator.getMonthDays(
+            currentDate = dateModel,
+            firstDayOfWeek = firstDayOfWeek,
+            minDate = LocalDate(2025, 4, 30)
+        )
 
         assertNotNull(days)
         assertEquals(42, days.size)
@@ -181,31 +187,6 @@ class CalendarGeneratorTest {
     }
 
     @Test
-    fun `getMonthDays should include disabled dates correctly`() {
-        // Given
-        val dateModel = LocalDate(2025, 10, 5) // Ekim 2025
-        val firstDayOfWeek = DayOfWeek.MONDAY
-        val disabledDates = setOf(
-            LocalDate(2025, 10, 15),
-            LocalDate(2025, 10, 20)
-        )
-
-        // When
-        val monthDays = calendarGenerator.getMonthDays(dateModel, firstDayOfWeek, disabledDates = disabledDates)
-        val days = monthDays.filterIsInstance<DayItem.Day>()
-
-        // Then
-        val disabledDay15 = days.first { it.date == LocalDate(2025, 10, 15) }
-        Assert.assertFalse(disabledDay15.isEnabled)
-
-        val disabledDay20 = days.first { it.date == LocalDate(2025, 10, 20) }
-        Assert.assertFalse(disabledDay20.isEnabled)
-
-        val enabledDay10 = days.first { it.date == LocalDate(2025, 10, 10) }
-        assertTrue(enabledDay10.isEnabled)
-    }
-
-    @Test
     fun `getMonthDays should include events correctly`() {
         // Given
         val dateModel = LocalDate(2025, 11, 1) // Kasım 2025
@@ -221,7 +202,8 @@ class CalendarGeneratorTest {
         val dayGridItems = calendarGenerator.getMonthDays(
             currentDate = dateModel,
             firstDayOfWeek = firstDayOfWeek,
-            eventDates = eventDates
+            eventDates = eventDates,
+            maxDate = LocalDate(2025, 11, 26)
         )
         val days = dayGridItems.filterIsInstance<DayItem.Day>()
 

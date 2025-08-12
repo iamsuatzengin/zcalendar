@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.calendarview.databinding.LayoutMonthGridItemBinding
 import com.zapplications.calendarview.extensions.getColor
+import com.zapplications.core.validator.DateValidator
 import com.zapplications.core.data.DayItem
 
 class MonthGridViewHolder(
@@ -19,15 +20,17 @@ class MonthGridViewHolder(
     fun bind(
         dayItem: DayItem,
         onDayClick: () -> Unit,
+        dateValidator: DateValidator?,
     ) = with(binding) {
         if (dayItem is DayItem.Day) {
+            val isValid = dateValidator?.isValid(dayItem.date) ?: true
             tvDayValue.text = dayItem.dayOfMonth.toString()
-            root.isEnabled = dayItem.isEnabled
+            root.isEnabled = isValid && dayItem.isEnabled
             eventsDotView.isVisible = !dayItem.events.isNullOrEmpty()
             dayItem.events?.firstOrNull()?.eventIndicatorColor?.let { color ->
                 eventsDotView.backgroundTintList = ColorStateList.valueOf(color.toColorInt())
             }
-            handleIsSelectedChanged(isSelected = dayItem.isSelected, isEnabled = dayItem.isEnabled)
+            handleIsSelectedChanged(isSelected = dayItem.isSelected, isEnabled = isValid && dayItem.isEnabled)
 
             root.setOnClickListener {
                 onDayClick.invoke()

@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.calendarview.customview.MonthView
+import com.zapplications.core.validator.DateValidator
 import com.zapplications.core.data.DayItem
 
 class MonthGridAdapter(
     private val calendarViewConfig: CalendarViewConfig,
     private val monthViewClickListener: MonthView.MonthViewClickListener,
+    private val dateValidator: DateValidator?
 ) : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
 
     companion object {
@@ -28,6 +30,7 @@ class MonthGridAdapter(
         val item = getItem(position)
         holder.bind(
             dayItem = item,
+            dateValidator = dateValidator,
             onDayClick = {
                 if (selectedPosition != position && item is DayItem.Day) {
                     handleOnSelectItem(position)
