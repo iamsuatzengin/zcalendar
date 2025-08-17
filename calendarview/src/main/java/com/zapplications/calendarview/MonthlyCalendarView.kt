@@ -16,6 +16,7 @@ import com.zapplications.core.extension.ifNull
 import com.zapplications.core.extension.isSameMonthOrAfter
 import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
+import com.zapplications.core.selection.SingleSelectionManager
 import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -182,11 +183,13 @@ class MonthlyCalendarView @JvmOverloads constructor(
         )
 
         selectedDate.ifNull {
-            selectedDate = dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
+            selectedDate =
+                dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
         }
 
         val initialSelectedPosition =
-            selectedDate?.let { dayItem -> dayItems.indexOf(dayItem as? DayItem) }
+            dayItems.indexOfFirst { (it as? DayItem.Day)?.date == selectedDate?.date }
+
         binding.viewMonthGrid.setCalendarList(dayItems, initialSelectedPosition)
     }
 
@@ -195,7 +198,8 @@ class MonthlyCalendarView @JvmOverloads constructor(
             binding.viewMonthGrid.setAdapterWithConfig(
                 calendarViewConfig = calendarViewConfig,
                 monthViewClickListener = this@MonthlyCalendarView,
-                dateValidator = dateValidator
+                dateValidator = dateValidator,
+                selectionManager = SingleSelectionManager()
             )
         }
     }

@@ -8,10 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.zapplications.calendarview.MonthlyCalendarView
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.core.validator.WeekdayValidator
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +35,8 @@ class MainActivity : AppCompatActivity() {
         ).setMaxDate(
             LocalDate(2025, 10, 10)
         ).setCurrentDate(
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+            //Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+            LocalDate(2025, 8, 5)
         ).setDateValidator(
             WeekdayValidator()
         ).buildCalendar()

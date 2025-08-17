@@ -1,7 +1,7 @@
 package com.zapplications.calendarview.adapter.monthgrid
 
-import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
+import com.zapplications.calendarview.adapter.MonthGridChangePayload
 import com.zapplications.core.data.DayItem
 
 class MonthGridAdapterDiffUtil: DiffUtil.ItemCallback<DayItem>() {
@@ -17,7 +17,7 @@ class MonthGridAdapterDiffUtil: DiffUtil.ItemCallback<DayItem>() {
 
     override fun areContentsTheSame(oldItem: DayItem, newItem: DayItem): Boolean = oldItem == newItem
 
-    override fun getChangePayload(oldItem: DayItem, newItem: DayItem): Any? {
+    override fun getChangePayload(oldItem: DayItem, newItem: DayItem): MonthGridChangePayload? {
         if (oldItem is DayItem.Day && newItem is DayItem.Day) {
             if (oldItem.isSelected != newItem.isSelected &&
                 oldItem.date == newItem.date &&
@@ -25,7 +25,7 @@ class MonthGridAdapterDiffUtil: DiffUtil.ItemCallback<DayItem>() {
                 oldItem.events == newItem.events &&
                 oldItem.isEnabled == newItem.isEnabled
             ) {
-                return Bundle().apply { putBoolean(MonthGridAdapter.IS_SELECTED_CHANGED, true) }
+                return MonthGridChangePayload.IsSelectedChanged(newItem)
             }
         }
         return null

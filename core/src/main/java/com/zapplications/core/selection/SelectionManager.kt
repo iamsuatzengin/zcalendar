@@ -3,11 +3,19 @@ package com.zapplications.core.selection
 import com.zapplications.core.data.DayItem
 
 /**
- * Interface for managing the selection of items in a list of [DayItem].
+ * Manages the selection of items within a list of [DayItem]s.
+ *
+ * This interface defines the contract for handling item selection logic,
+ * such as marking an item as selected, updating the list state, and
+ * determining if an item is eligible for selection.
  */
 interface SelectionManager {
     fun onDaySelected(position: Int, currentList: List<DayItem>): List<DayItem>
     fun setSelectedPosition(position: Int)
+
+    fun isDayItemSelectable(item: DayItem) = item is DayItem.Day
+            && item.isEnabled
+            && !item.isSelected
 
     companion object {
         const val NO_POSITION = -1

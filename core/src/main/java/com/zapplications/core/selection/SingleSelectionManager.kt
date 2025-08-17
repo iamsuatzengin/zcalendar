@@ -10,11 +10,6 @@ class SingleSelectionManager : SelectionManager {
         position: Int,
         currentList: List<DayItem>,
     ): List<DayItem> {
-        val clickedItem = currentList.getOrNull(position)
-        if (clickedItem == null || clickedItem !is DayItem.Day || !clickedItem.isEnabled) {
-            return currentList
-        }
-
         val newList = currentList.toMutableList()
         if (selectedPosition != NO_POSITION) {
             val oldPosition = selectedPosition

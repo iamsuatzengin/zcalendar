@@ -32,9 +32,7 @@ class MonthGridViewHolder(
             }
             handleIsSelectedChanged(isSelected = dayItem.isSelected, isEnabled = isValid && dayItem.isEnabled)
 
-            root.setOnClickListener {
-                onDayClick.invoke()
-            }
+            root.setOnClickListener { onDayClick.invoke() }
 
         } else {
             root.isEnabled = false
@@ -53,7 +51,7 @@ class MonthGridViewHolder(
         isSelected: Boolean,
         isEnabled: Boolean,
     ) = with(binding) {
-        if (isSelected) {
+        if (isSelected && isEnabled) {
             tvDayValue.setTextColor(
                 binding.getColor(calendarViewConfig.selectedTextColor)
             )
