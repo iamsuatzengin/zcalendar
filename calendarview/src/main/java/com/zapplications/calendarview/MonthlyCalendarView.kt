@@ -16,7 +16,7 @@ import com.zapplications.core.extension.ifNull
 import com.zapplications.core.extension.isSameMonthOrAfter
 import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
-import com.zapplications.core.selection.SingleSelectionManager
+import com.zapplications.core.selection.RangeSelectionManager
 import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -179,7 +179,8 @@ class MonthlyCalendarView @JvmOverloads constructor(
             eventDates = eventDates,
             selectedDate = selectedDate?.date ?: current,
             minDate = minDate,
-            maxDate = maxDate
+            maxDate = maxDate,
+            dateValidator = dateValidator
         )
 
         selectedDate.ifNull {
@@ -198,8 +199,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
             binding.viewMonthGrid.setAdapterWithConfig(
                 calendarViewConfig = calendarViewConfig,
                 monthViewClickListener = this@MonthlyCalendarView,
-                dateValidator = dateValidator,
-                selectionManager = SingleSelectionManager()
+                selectionManager = RangeSelectionManager()
             )
         }
     }

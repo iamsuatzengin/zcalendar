@@ -6,14 +6,13 @@ import com.zapplications.calendarview.adapter.MonthGridChangePayload
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.calendarview.customview.MonthView
 import com.zapplications.core.data.DayItem
+import com.zapplications.core.selection.RangeSelectionManager
 import com.zapplications.core.selection.SelectionManager
 import com.zapplications.core.selection.SingleSelectionManager
-import com.zapplications.core.validator.DateValidator
 
 class MonthGridAdapter(
     private val calendarViewConfig: CalendarViewConfig,
     private val monthViewClickListener: MonthView.MonthViewClickListener,
-    private val dateValidator: DateValidator?,
     private val selectionManager: SelectionManager
 ) : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
 
@@ -26,8 +25,10 @@ class MonthGridAdapter(
         val item = getItem(position)
         holder.bind(
             dayItem = item,
-            dateValidator = dateValidator,
-            onDayClick = { onDaySelected(position) }
+            onDayClick = { onDaySelected(position) },
+            isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(position),
+            isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(position),
+            isSelectionRange = selectionManager is RangeSelectionManager
         )
     }
 
@@ -40,7 +41,10 @@ class MonthGridAdapter(
             is MonthGridChangePayload.IsSelectedChanged -> {
                 holder.handleIsSelectedChanged(
                     isSelected = latestPayloads.newItem.isSelected,
-                    isEnabled = latestPayloads.newItem.isEnabled
+                    isEnabled = latestPayloads.newItem.isEnabled,
+                    isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(position),
+                    isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(position),
+                    isSelectionRange = selectionManager is RangeSelectionManager
                 )
             }
 

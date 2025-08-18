@@ -2,6 +2,8 @@ package com.zapplications.core.generator
 
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.data.Event
+import com.zapplications.core.validator.MondayDisableMockValidator
+import com.zapplications.core.validator.WeekdayValidator
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import org.junit.Assert
@@ -221,5 +223,51 @@ class CalendarGeneratorTest {
 
         val dayWithNoEvent = days.first { it.date == LocalDate(2025, 11, 5) }
         Assert.assertNull(dayWithNoEvent.events)
+    }
+
+    @Test
+    fun `getMonthDays should handle WeekdayValidator correctly`() {
+        // Given
+        // August 2025 - There are 10 weekends in August. [2, 3, 9, 10, 16, 17, 23, 24, 30, 31]
+        val dateModel = LocalDate(2025, 8, 1)
+        val firstDayOfWeek = DayOfWeek.MONDAY
+
+        // When
+        val dayGridItems = calendarGenerator.getMonthDays(
+            currentDate = dateModel,
+            firstDayOfWeek = firstDayOfWeek,
+            dateValidator = WeekdayValidator()
+        )
+
+        val days = dayGridItems.filterIsInstance<DayItem.Day>()
+
+        // Then
+        assertEquals(31, days.size)
+
+        val notValidDayItemsSize = days.filter { !it.isEnabled }.size
+        assertEquals(10, notValidDayItemsSize)
+    }
+
+    @Test
+    fun `getMonthDays should handle MondayDisableMockValidator correctly`() {
+        // Given
+        val dateModel = LocalDate(2025, 8, 1)
+        val firstDayOfWeek = DayOfWeek.MONDAY
+
+        // When
+        val dayGridItems = calendarGenerator.getMonthDays(
+            currentDate = dateModel,
+            firstDayOfWeek = firstDayOfWeek,
+            dateValidator = MondayDisableMockValidator()
+        )
+
+        val days = dayGridItems.filterIsInstance<DayItem.Day>()
+
+        // Then
+        val allMondayDaysIsDisable = days.filter {
+            it.date.dayOfWeek == DayOfWeek.MONDAY
+        }.all { !it.isEnabled }
+
+        assertEquals(true, allMondayDaysIsDisable)
     }
 }

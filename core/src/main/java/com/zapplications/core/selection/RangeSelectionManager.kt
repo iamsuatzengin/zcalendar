@@ -21,7 +21,7 @@ class RangeSelectionManager : SelectionManager {
         } else if (position > selectedStartPosition) {
             selectedEndPosition = position
         } else if (position < selectedStartPosition) {
-            selectedEndPosition = selectedStartPosition
+            selectedEndPosition = NO_POSITION
             selectedStartPosition = position
         }
 
@@ -44,4 +44,7 @@ class RangeSelectionManager : SelectionManager {
     override fun setSelectedPosition(position: Int) {
         selectedStartPosition = position
     }
+
+    fun isStartDate(position: Int) = position == selectedStartPosition
+    fun isEndDate(position: Int) = position == selectedEndPosition
 }

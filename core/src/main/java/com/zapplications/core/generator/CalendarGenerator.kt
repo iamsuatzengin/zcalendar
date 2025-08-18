@@ -4,6 +4,7 @@ import com.zapplications.core.data.DayItem
 import com.zapplications.core.data.Event
 import com.zapplications.core.extension.getLength
 import com.zapplications.core.extension.isLeapYear
+import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
 import java.time.DayOfWeek
@@ -52,6 +53,10 @@ class CalendarGenerator {
      * @param firstDayOfWeek The [DayOfWeek] to be considered as the first day of the week
      *                       (e.g., [DayOfWeek.MONDAY], [DayOfWeek.SUNDAY]). This affects
      *                       the layout of the days in the grid.
+     *
+     * @param minDate The optional [LocalDate] representing the earliest date that can be selected.
+     * @param maxDate The optional [LocalDate] representing the latest date that can be selected.
+     * @param dateValidator An optional [DateValidator] to validate selected dates.
      * @param eventDates An optional map where keys are [LocalDate] objects and values are
      *                   lists of [EventData] associated with that date.
      * @return A [DayItem] list containing a list of [DayItem.Day]s and [DayItem.Empty] that represent the days
@@ -64,6 +69,7 @@ class CalendarGenerator {
         minDate: LocalDate? = null,
         maxDate: LocalDate? = null,
         selectedDate: LocalDate? = null,
+        dateValidator: DateValidator? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
     ): List<DayItem> {
         val month = currentDate.month
@@ -88,7 +94,7 @@ class CalendarGenerator {
                     dayOfMonth = dayOfMonth,
                     events = events,
                     isSelected = currentDate == selectedDate,
-                    isEnabled = isEnabled
+                    isEnabled = isEnabled && dateValidator?.isValid(currentDate) ?: true
                 )
             )
         }

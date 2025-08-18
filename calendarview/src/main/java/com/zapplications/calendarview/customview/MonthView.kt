@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zapplications.calendarview.adapter.monthgrid.MonthGridAdapter
 import com.zapplications.calendarview.config.CalendarViewConfig
-import com.zapplications.core.validator.DateValidator
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.SelectionManager
 
@@ -33,13 +32,11 @@ class MonthView @JvmOverloads constructor(
     fun setAdapterWithConfig(
         calendarViewConfig: CalendarViewConfig,
         monthViewClickListener: MonthViewClickListener,
-        dateValidator: DateValidator?,
         selectionManager: SelectionManager
     ) {
         monthGridAdapter = MonthGridAdapter(
             calendarViewConfig = calendarViewConfig,
             monthViewClickListener = monthViewClickListener,
-            dateValidator = dateValidator,
             selectionManager = selectionManager
         )
     }
