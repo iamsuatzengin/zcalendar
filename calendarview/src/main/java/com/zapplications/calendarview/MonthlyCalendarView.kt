@@ -16,7 +16,8 @@ import com.zapplications.core.extension.ifNull
 import com.zapplications.core.extension.isSameMonthOrAfter
 import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
-import com.zapplications.core.selection.RangeSelectionManager
+import com.zapplications.core.selection.SelectionManager
+import com.zapplications.core.selection.SingleSelectionManager
 import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -67,6 +68,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
         private set
 
     private var dateValidator: DateValidator? = null
+    private var selectionManager: SelectionManager = SingleSelectionManager()
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
 
@@ -111,7 +113,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         this.calendarViewConfig = calendarViewConfig
 
         binding.clQuickSelectionBarLayout.isVisible = calendarViewConfig.showQuickSelectionBar
-
         return this
     }
 
@@ -164,6 +165,11 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
+    fun setSelectionManager(selectionManager: SelectionManager): MonthlyCalendarView {
+        this.selectionManager = selectionManager
+        return this
+    }
+
     fun buildCalendar() {
         setAdapter()
         setQuickLinkButtons()
@@ -186,12 +192,11 @@ class MonthlyCalendarView @JvmOverloads constructor(
         selectedDate.ifNull {
             selectedDate =
                 dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
+            val pos = dayItems.indexOfFirst { (it as? DayItem.Day)?.date == selectedDate?.date }
+            selectionManager.setInitialPosition(pos)
         }
 
-        val initialSelectedPosition =
-            dayItems.indexOfFirst { (it as? DayItem.Day)?.date == selectedDate?.date }
-
-        binding.viewMonthGrid.setCalendarList(dayItems, initialSelectedPosition)
+        binding.viewMonthGrid.setCalendarList(dayItems)
     }
 
     private fun setAdapter() {
@@ -199,7 +204,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
             binding.viewMonthGrid.setAdapterWithConfig(
                 calendarViewConfig = calendarViewConfig,
                 monthViewClickListener = this@MonthlyCalendarView,
-                selectionManager = RangeSelectionManager()
+                selectionManager = selectionManager
             )
         }
     }

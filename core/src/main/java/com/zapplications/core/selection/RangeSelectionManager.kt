@@ -1,11 +1,15 @@
 package com.zapplications.core.selection
 
 import com.zapplications.core.data.DayItem
+import com.zapplications.core.extension.letBoth
 import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
 class RangeSelectionManager : SelectionManager {
     private var selectedStartPosition: Int = NO_POSITION
     private var selectedEndPosition: Int = NO_POSITION
+
+    var selectedDateRange: Pair<DayItem.Day?, DayItem.Day?>? = null
+        private set
 
     override fun onDaySelected(
         position: Int,
@@ -21,8 +25,8 @@ class RangeSelectionManager : SelectionManager {
         } else if (position > selectedStartPosition) {
             selectedEndPosition = position
         } else if (position < selectedStartPosition) {
-            selectedEndPosition = NO_POSITION
             selectedStartPosition = position
+            selectedEndPosition = NO_POSITION
         }
 
         val newList = currentList.toMutableList().mapIndexed { index, item ->
@@ -37,11 +41,17 @@ class RangeSelectionManager : SelectionManager {
 
             } else item
         }
+        val selectedStartDate = newList.getOrNull(selectedStartPosition) as? DayItem.Day
+        val selectedEndDate = newList.getOrNull(selectedEndPosition) as? DayItem.Day
+
+        letBoth(selectedStartDate, selectedEndDate) { start, end ->
+            selectedDateRange = start to end
+        }
 
         return newList
     }
 
-    override fun setSelectedPosition(position: Int) {
+    override fun setInitialPosition(position: Int) {
         selectedStartPosition = position
     }
 

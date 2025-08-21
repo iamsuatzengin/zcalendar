@@ -28,7 +28,7 @@ class SingleSelectionManager : SelectionManager {
         return newList
     }
 
-    override fun setSelectedPosition(position: Int) {
+    override fun setInitialPosition(position: Int) {
         selectedPosition = position
     }
 

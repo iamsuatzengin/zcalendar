@@ -11,7 +11,7 @@ import com.zapplications.core.data.DayItem
  */
 interface SelectionManager {
     fun onDaySelected(position: Int, currentList: List<DayItem>): List<DayItem>
-    fun setSelectedPosition(position: Int)
+    fun setInitialPosition(position: Int)
 
     fun isDayItemSelectable(item: DayItem) = item is DayItem.Day
             && item.isEnabled

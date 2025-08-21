@@ -6,6 +6,7 @@ import com.zapplications.calendarview.adapter.MonthGridChangePayload
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.calendarview.customview.MonthView
 import com.zapplications.core.data.DayItem
+import com.zapplications.core.selection.MultipleSelectionManager
 import com.zapplications.core.selection.RangeSelectionManager
 import com.zapplications.core.selection.SelectionManager
 import com.zapplications.core.selection.SingleSelectionManager
@@ -54,7 +55,7 @@ class MonthGridAdapter(
 
     private fun onDaySelected(position: Int) {
         val item = getItem(position)
-        if (!selectionManager.isDayItemSelectable(item)) return
+        if (!selectionManager.isDayItemSelectable(item) && selectionManager !is MultipleSelectionManager) return
 
         val newList = selectionManager.onDaySelected(position, currentList)
         submitList(newList)
@@ -72,9 +73,5 @@ class MonthGridAdapter(
             newItem = newItem,
             currentList = currentList
         )
-    }
-
-    fun setSelectedPosition(position: Int) {
-        selectionManager.setSelectedPosition(position)
     }
 }

@@ -41,9 +41,8 @@ class MonthView @JvmOverloads constructor(
         )
     }
 
-    fun setCalendarList(dayItems: List<DayItem>, initialSelectedPosition: Int?) {
+    fun setCalendarList(dayItems: List<DayItem>) {
         monthGridAdapter?.submitList(dayItems) {
-            monthGridAdapter?.setSelectedPosition(initialSelectedPosition ?: NO_POSITION)
             updateHeight()
         }
     }
