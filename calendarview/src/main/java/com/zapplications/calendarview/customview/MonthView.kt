@@ -32,7 +32,7 @@ class MonthView @JvmOverloads constructor(
     fun setAdapterWithConfig(
         calendarViewConfig: CalendarViewConfig,
         monthViewClickListener: MonthViewClickListener,
-        selectionManager: SelectionManager
+        selectionManager: SelectionManager<*>
     ) {
         monthGridAdapter = MonthGridAdapter(
             calendarViewConfig = calendarViewConfig,

@@ -14,7 +14,7 @@ import com.zapplications.core.selection.SingleSelectionManager
 class MonthGridAdapter(
     private val calendarViewConfig: CalendarViewConfig,
     private val monthViewClickListener: MonthView.MonthViewClickListener,
-    private val selectionManager: SelectionManager
+    private val selectionManager: SelectionManager<*>
 ) : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MonthGridViewHolder.from(

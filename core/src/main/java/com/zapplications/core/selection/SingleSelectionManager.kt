@@ -3,8 +3,9 @@ package com.zapplications.core.selection
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
-class SingleSelectionManager : SelectionManager {
+class SingleSelectionManager : SelectionManager<DayItem.Day> {
     private var selectedPosition: Int = NO_POSITION
+    private var selectedItem: DayItem.Day? = null
 
     override fun onDaySelected(
         position: Int,
@@ -25,8 +26,11 @@ class SingleSelectionManager : SelectionManager {
         }
 
         selectedPosition = position
+        selectedItem = newList.getOrNull(selectedPosition) as? DayItem.Day
         return newList
     }
+
+    override fun getSelection(): DayItem.Day? = selectedItem
 
     override fun setInitialPosition(position: Int) {
         selectedPosition = position

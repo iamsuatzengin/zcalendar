@@ -2,6 +2,7 @@ package com.zapplications.calendarview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
@@ -68,7 +69,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
         private set
 
     private var dateValidator: DateValidator? = null
-    private var selectionManager: SelectionManager = SingleSelectionManager()
+    private var selectionManager: SelectionManager<*> = SingleSelectionManager()
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
 
@@ -165,7 +166,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
-    fun setSelectionManager(selectionManager: SelectionManager): MonthlyCalendarView {
+    fun setSelectionManager(selectionManager: SelectionManager<*>): MonthlyCalendarView {
         this.selectionManager = selectionManager
         return this
     }
@@ -242,6 +243,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
     override fun onSingleDayClick(dayItem: DayItem.Day) {
         selectedDate = dayItem
         onDateSelectedListener?.onDateSelected(dayItem)
+        Log.i("Click Listener", "onSingleDayClick: ${selectionManager.getSelection()}")
     }
 
     fun setOnDateSelectedListener(onDateSelectedListener: OnDateSelectedListener) {

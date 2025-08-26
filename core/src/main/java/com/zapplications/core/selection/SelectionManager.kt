@@ -9,9 +9,11 @@ import com.zapplications.core.data.DayItem
  * such as marking an item as selected, updating the list state, and
  * determining if an item is eligible for selection.
  */
-interface SelectionManager {
+interface SelectionManager<T> {
     fun onDaySelected(position: Int, currentList: List<DayItem>): List<DayItem>
     fun setInitialPosition(position: Int)
+
+    fun getSelection(): T?
 
     fun isDayItemSelectable(item: DayItem) = item is DayItem.Day
             && item.isEnabled
