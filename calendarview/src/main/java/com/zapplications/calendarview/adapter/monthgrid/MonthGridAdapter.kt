@@ -27,8 +27,8 @@ class MonthGridAdapter(
         holder.bind(
             dayItem = item,
             onDayClick = { onDaySelected(position) },
-            isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(position),
-            isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(position),
+            isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(item),
+            isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(item),
             isSelectionRange = selectionManager is RangeSelectionManager
         )
     }
@@ -43,8 +43,8 @@ class MonthGridAdapter(
                 holder.handleIsSelectedChanged(
                     isSelected = latestPayloads.newItem.isSelected,
                     isEnabled = latestPayloads.newItem.isEnabled,
-                    isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(position),
-                    isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(position),
+                    isStartDate = selectionManager is RangeSelectionManager && selectionManager.isStartDate(getItem(position)),
+                    isEndDate = selectionManager is RangeSelectionManager && selectionManager.isEndDate(getItem(position)),
                     isSelectionRange = selectionManager is RangeSelectionManager
                 )
             }
@@ -57,9 +57,24 @@ class MonthGridAdapter(
         val item = getItem(position)
         if (!selectionManager.isDayItemSelectable(item) && selectionManager !is MultipleSelectionManager) return
 
-        val newList = selectionManager.onDaySelected(position, currentList)
-        submitList(newList)
-        (item as? DayItem.Day)?.let { monthViewClickListener.onSingleDayClick(it) }
+        (item as? DayItem.Day)?.let {
+            val newList = selectionManager.onDaySelected(it, currentList)
+            submitList(newList)
+
+            when (selectionManager) {
+                is SingleSelectionManager -> {
+                    selectionManager.getSelection()?.let { dayItem -> monthViewClickListener.onSingleDayClick (dayItem) }
+                }
+
+                is MultipleSelectionManager -> {
+                    selectionManager.getSelection()?.let { dayItems -> monthViewClickListener.onMultipleDayClick(dayItems) }
+                }
+
+                is RangeSelectionManager -> {
+                    selectionManager.getSelection()?.let { dayItems -> monthViewClickListener.onRangeDayClick(dayItems) }
+                }
+            }
+        }
     }
 
     /**

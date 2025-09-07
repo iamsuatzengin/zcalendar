@@ -5,8 +5,10 @@ import com.zapplications.core.data.Event
 import com.zapplications.core.extension.getLength
 import com.zapplications.core.extension.isLeapYear
 import com.zapplications.core.validator.DateValidator
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
+import kotlinx.datetime.plus
 import java.time.DayOfWeek
 
 /**
@@ -68,7 +70,7 @@ class CalendarGenerator {
         firstDayOfWeek: DayOfWeek,
         minDate: LocalDate? = null,
         maxDate: LocalDate? = null,
-        selectedDate: LocalDate? = null,
+        selectedDates: List<LocalDate>? = null,
         dateValidator: DateValidator? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
     ): List<DayItem> {
@@ -83,18 +85,19 @@ class CalendarGenerator {
 
         val currentMonthLength = month.getLength(isLeapYear = year.isLeapYear())
         for (dayOfMonth in FIRST_DAY_OF_MONTH_NUMBER..currentMonthLength) {
-            val currentDate = LocalDate(year, month.number, dayOfMonth)
-            val checkMinDate = !(minDate != null && currentDate < minDate)
-            val checkMaxDate = !(maxDate != null && currentDate > maxDate)
+            val date = LocalDate(year, month.number, dayOfMonth)
+            val checkMinDate = !(minDate != null && date < minDate)
+            val checkMaxDate = !(maxDate != null && date > maxDate)
             val isEnabled = checkMinDate && checkMaxDate
-            val events = eventDates?.get(currentDate)
+            val events = eventDates?.get(date)
+            val isSelected = selectedDates?.contains(date) ?: (date == currentDate)
             dayGridItems.add(
                 DayItem.Day(
-                    date = currentDate,
+                    date = date,
                     dayOfMonth = dayOfMonth,
                     events = events,
-                    isSelected = currentDate == selectedDate,
-                    isEnabled = isEnabled && dateValidator?.isValid(currentDate) ?: true
+                    isSelected = isSelected,
+                    isEnabled = isEnabled && dateValidator?.isValid(date) ?: true
                 )
             )
         }
@@ -110,4 +113,18 @@ class CalendarGenerator {
     }
 
     fun computeTrailingEmptySlots(totalSlots: Int): Int = (7 - (totalSlots % 7)) % 7
+
+    fun getDatesBetweenRangeItems(startDate: LocalDate?, endDate: LocalDate?): List<LocalDate> {
+        if (startDate == null || endDate == null || endDate < startDate) return emptyList()
+
+        val dates = mutableListOf<LocalDate>()
+        var currentDate: LocalDate = startDate
+
+        while (currentDate <= endDate) {
+            dates.add(currentDate)
+            currentDate = currentDate.plus(1, DateTimeUnit.DAY)
+        }
+
+        return dates
+    }
 }

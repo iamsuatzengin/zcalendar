@@ -6,28 +6,26 @@ class MultipleSelectionManager : SelectionManager<MutableSet<DayItem.Day>> {
     private val selectedPositions = mutableSetOf<Int>()
     private val selectedDays = mutableSetOf<DayItem.Day>()
 
-    override fun onDaySelected(position: Int, currentList: List<DayItem>): List<DayItem> {
+    override fun onDaySelected(date: DayItem.Day, currentList: List<DayItem>): List<DayItem> {
         val mutableCurrentList = currentList.toMutableList()
-        if (selectedPositions.contains(position) && selectedPositions.size > 1) {
-            selectedPositions.remove(position)
-            selectedDays.removeIf { it.date == (mutableCurrentList[position] as DayItem.Day).date }
+        val selectedDates = selectedDays.map { it.date }.toMutableList()
 
-            val updatedItem = (mutableCurrentList[position] as DayItem.Day).copy(isSelected = false)
-            mutableCurrentList[position] = updatedItem
+        val index = mutableCurrentList.indexOfFirst { it as? DayItem.Day == date }
+        if (selectedDates.contains(date.date) && selectedDates.size > 1) {
+            selectedDates.remove(date.date)
+            selectedDays.removeIf { it == date }
+
+            val updatedItem = date.copy(isSelected = false)
+            mutableCurrentList[index] = updatedItem
+
             return mutableCurrentList
         }
 
-        selectedPositions.add(position)
+        selectedDates.add(date.date)
 
-        selectedPositions.forEach { pos ->
-            val dayItem = mutableCurrentList.getOrNull(pos)
-            if (dayItem is DayItem.Day) {
-                val updatedItem = dayItem.copy(isSelected = true)
-                mutableCurrentList[pos] = updatedItem
-                selectedDays.add(updatedItem)
-            }
-        }
-
+        val updatedItem = date.copy(isSelected = true)
+        mutableCurrentList[index] = updatedItem
+        selectedDays.add(updatedItem)
         return mutableCurrentList
     }
 

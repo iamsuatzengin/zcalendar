@@ -10,7 +10,7 @@ import com.zapplications.core.data.DayItem
  * determining if an item is eligible for selection.
  */
 interface SelectionManager<T> {
-    fun onDaySelected(position: Int, currentList: List<DayItem>): List<DayItem>
+    fun onDaySelected(date: DayItem.Day, currentList: List<DayItem>): List<DayItem>
     fun setInitialPosition(position: Int)
 
     fun getSelection(): T?

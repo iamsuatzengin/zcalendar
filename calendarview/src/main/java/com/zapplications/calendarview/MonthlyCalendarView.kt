@@ -2,7 +2,6 @@ package com.zapplications.calendarview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
@@ -62,8 +61,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
             setCurrentMonth(value)
         }
 
-    var selectedDate: DayItem.Day? = null
-        private set
+    val selectedDates: MutableList<LocalDate> = mutableListOf()
 
     var quickSelectionButtons: List<QuickSelectionButtonModel>? = null
         private set
@@ -184,18 +182,11 @@ class MonthlyCalendarView @JvmOverloads constructor(
             currentDate = current,
             firstDayOfWeek = firstDayOfWeek,
             eventDates = eventDates,
-            selectedDate = selectedDate?.date ?: current,
+            selectedDates = selectedDates,
             minDate = minDate,
             maxDate = maxDate,
             dateValidator = dateValidator
         )
-
-        selectedDate.ifNull {
-            selectedDate =
-                dayItems.firstOrNull { (it as? DayItem.Day)?.isSelected == true } as? DayItem.Day
-            val pos = dayItems.indexOfFirst { (it as? DayItem.Day)?.date == selectedDate?.date }
-            selectionManager.setInitialPosition(pos)
-        }
 
         binding.viewMonthGrid.setCalendarList(dayItems)
     }
@@ -224,29 +215,49 @@ class MonthlyCalendarView @JvmOverloads constructor(
     }
 
     private fun setSelectedDateAfterQuickSelection(date: LocalDate) {
-        val oldSelectedDate = selectedDate
-        selectedDate = selectedDate?.copy(
-            date = date,
-            dayOfMonth = date.dayOfMonth,
-            isSelected = true
-        )
-
-        if (currentDate?.month != date.month) {
-            currentDate = selectedDate?.date
-            buildCalendar()
-        } else {
-            currentDate = selectedDate?.date
-            monthAdapter?.handleOnSelectItem(oldSelectedDate, selectedDate)
-        }
+//        val oldSelectedDate = selectedDate
+//        selectedDate = selectedDate?.copy(
+//            date = date,
+//            dayOfMonth = date.dayOfMonth,
+//            isSelected = true
+//        )
+//
+//        if (currentDate?.month != date.month) {
+//            currentDate = selectedDate?.date
+//            buildCalendar()
+//        } else {
+//            currentDate = selectedDate?.date
+//            monthAdapter?.handleOnSelectItem(oldSelectedDate, selectedDate)
+//        }
     }
 
     override fun onSingleDayClick(dayItem: DayItem.Day) {
-        selectedDate = dayItem
+        selectedDates.clear()
+        selectedDates.add(dayItem.date)
         onDateSelectedListener?.onDateSelected(dayItem)
-        Log.i("Click Listener", "onSingleDayClick: ${selectionManager.getSelection()}")
     }
 
-    fun setOnDateSelectedListener(onDateSelectedListener: OnDateSelectedListener) {
+    override fun onRangeDayClick(rangeItems: Pair<DayItem.Day?, DayItem.Day?>) {
+        selectedDates.clear()
+        if (rangeItems.first != null && rangeItems.second == null) {
+            val date = rangeItems.first?.date
+            if (date != null) selectedDates.add(date)
+            return
+        }
+
+        val datesBetweenRangeItems = calendarGenerator.getDatesBetweenRangeItems(
+            rangeItems.first?.date,
+            rangeItems.second?.date
+        )
+        selectedDates.addAll(datesBetweenRangeItems)
+    }
+
+    override fun onMultipleDayClick(dayItems: Set<DayItem.Day>) {
+        selectedDates.clear()
+        selectedDates.addAll(dayItems.map { it.date })
+    }
+
+    fun setOnDateSelectedListener(onDateSelectedListener:  OnDateSelectedListener) {
         this.onDateSelectedListener = onDateSelectedListener
     }
 

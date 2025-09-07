@@ -65,7 +65,9 @@ class MonthView @JvmOverloads constructor(
         const val SPAN_COUNT = 7
     }
 
-    fun interface MonthViewClickListener {
+    interface MonthViewClickListener {
         fun onSingleDayClick(dayItem: DayItem.Day)
+        fun onRangeDayClick(rangeItems: Pair<DayItem.Day?, DayItem.Day?>)
+        fun onMultipleDayClick(dayItems: Set<DayItem.Day>)
     }
 }

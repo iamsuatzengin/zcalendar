@@ -8,25 +8,24 @@ class SingleSelectionManager : SelectionManager<DayItem.Day> {
     private var selectedItem: DayItem.Day? = null
 
     override fun onDaySelected(
-        position: Int,
+        date: DayItem.Day,
         currentList: List<DayItem>,
     ): List<DayItem> {
         val newList = currentList.toMutableList()
-        if (selectedPosition != NO_POSITION) {
-            val oldPosition = selectedPosition
-            val oldItem = currentList.getOrNull(oldPosition)
-            if (oldItem is DayItem.Day) {
-                newList[oldPosition] = oldItem.copy(isSelected = false)
+        if (selectedItem != null) {
+            val oldItem = selectedItem
+            oldItem?.let {
+                val position = currentList.indexOfFirst { (it as? DayItem.Day)?.date == oldItem.date }
+                if (position != NO_POSITION) newList[position] = oldItem.copy(isSelected = false)
             }
         }
 
-        val newSelectedItem = currentList.getOrNull(position)
-        if (newSelectedItem is DayItem.Day && !newSelectedItem.isSelected) {
-            newList[position] = newSelectedItem.copy(isSelected = true)
+        if (!date.isSelected) {
+            val position = currentList.indexOfFirst { it as? DayItem.Day == date }
+            newList[position] = date.copy(isSelected = true)
         }
 
-        selectedPosition = position
-        selectedItem = newList.getOrNull(selectedPosition) as? DayItem.Day
+        selectedItem = date
         return newList
     }
 
@@ -45,8 +44,6 @@ class SingleSelectionManager : SelectionManager<DayItem.Day> {
 
         val newPosition = getDayItemPosition(newItem, currentList)
         newList[newPosition] = newItem
-
-        selectedPosition = newPosition
 
         return newList
     }

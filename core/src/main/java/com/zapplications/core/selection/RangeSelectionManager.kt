@@ -7,42 +7,40 @@ class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>>
     private var selectedStartPosition: Int = NO_POSITION
     private var selectedEndPosition: Int = NO_POSITION
 
+    private var selectedStartDay: DayItem.Day? = null
+    private var selectedEndDay: DayItem.Day? = null
+
     private var selectedDateRange: Pair<DayItem.Day?, DayItem.Day?>? = null
 
     override fun onDaySelected(
-        position: Int,
+        date: DayItem.Day,
         currentList: List<DayItem>,
     ): List<DayItem> {
-        if (selectedStartPosition != NO_POSITION && selectedEndPosition != NO_POSITION) {
-            selectedStartPosition = position
-            selectedEndPosition = NO_POSITION
+        if (selectedStartDay == null) {
+            selectedStartDay = date
+        } else if (selectedEndDay == null && date.date >= selectedStartDay!!.date) {
+            selectedEndDay = date
+        } else  {
+            selectedStartDay = date
+            selectedEndDay = null
         }
 
-        if (selectedStartPosition == NO_POSITION) {
-            selectedStartPosition = position
-        } else if (position > selectedStartPosition) {
-            selectedEndPosition = position
-        } else if (position < selectedStartPosition) {
-            selectedStartPosition = position
-            selectedEndPosition = NO_POSITION
-        }
+        val newList = currentList.toMutableList()
 
-        val newList = currentList.toMutableList().mapIndexed { index, item ->
+        newList.forEachIndexed { index, item ->
             if (item is DayItem.Day) {
-                if (selectedStartPosition != NO_POSITION && selectedEndPosition == NO_POSITION) {
-                    item.copy(isSelected = index == selectedStartPosition)
+                if (selectedStartDay != null && selectedEndDay == null) {
+                    newList[index] = item.copy(isSelected = item.date == selectedStartDay?.date)
                 } else {
-                    item.copy(
-                        isSelected = index in selectedStartPosition..selectedEndPosition
-                    )
+                    newList[index] = item.copy(isSelected = (selectedStartDay?.date)?.rangeTo((selectedEndDay?.date!!))
+                        ?.contains(item.date) == true)
                 }
-
-            } else item
+            } else {
+                item
+            }
         }
-        val selectedStartDate = newList.getOrNull(selectedStartPosition) as? DayItem.Day
-        val selectedEndDate = newList.getOrNull(selectedEndPosition) as? DayItem.Day
-        selectedDateRange = selectedStartDate to selectedEndDate
 
+        selectedDateRange = selectedStartDay to selectedEndDay
         return newList
     }
 
@@ -52,6 +50,10 @@ class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>>
         selectedStartPosition = position
     }
 
-    fun isStartDate(position: Int) = position == selectedStartPosition
-    fun isEndDate(position: Int) = position == selectedEndPosition
+    override fun isDayItemSelectable(item: DayItem): Boolean {
+        return item is DayItem.Day && item.isEnabled
+    }
+
+    fun isStartDate(dayItem: DayItem?) = (dayItem as? DayItem.Day)?.date == selectedStartDay?.date
+    fun isEndDate(dayItem: DayItem?) = (dayItem as? DayItem.Day)?.date == selectedEndDay?.date
 }
