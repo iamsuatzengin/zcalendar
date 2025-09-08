@@ -31,12 +31,10 @@ class MonthView @JvmOverloads constructor(
 
     fun setAdapterWithConfig(
         calendarViewConfig: CalendarViewConfig,
-        monthViewClickListener: MonthViewClickListener,
         selectionManager: SelectionManager<*>
     ) {
         monthGridAdapter = MonthGridAdapter(
             calendarViewConfig = calendarViewConfig,
-            monthViewClickListener = monthViewClickListener,
             selectionManager = selectionManager
         )
     }
@@ -63,11 +61,5 @@ class MonthView @JvmOverloads constructor(
 
     companion object {
         const val SPAN_COUNT = 7
-    }
-
-    interface MonthViewClickListener {
-        fun onSingleDayClick(dayItem: DayItem.Day)
-        fun onRangeDayClick(rangeItems: Pair<DayItem.Day?, DayItem.Day?>)
-        fun onMultipleDayClick(dayItems: Set<DayItem.Day>)
     }
 }

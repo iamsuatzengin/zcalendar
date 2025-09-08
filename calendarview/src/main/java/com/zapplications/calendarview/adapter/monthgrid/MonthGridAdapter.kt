@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.zapplications.calendarview.adapter.MonthGridChangePayload
 import com.zapplications.calendarview.config.CalendarViewConfig
-import com.zapplications.calendarview.customview.MonthView
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.MultipleSelectionManager
 import com.zapplications.core.selection.RangeSelectionManager
@@ -13,7 +12,6 @@ import com.zapplications.core.selection.SingleSelectionManager
 
 class MonthGridAdapter(
     private val calendarViewConfig: CalendarViewConfig,
-    private val monthViewClickListener: MonthView.MonthViewClickListener,
     private val selectionManager: SelectionManager<*>
 ) : ListAdapter<DayItem, MonthGridViewHolder>(MonthGridAdapterDiffUtil()) {
 
@@ -60,20 +58,6 @@ class MonthGridAdapter(
         (item as? DayItem.Day)?.let {
             val newList = selectionManager.onDaySelected(it, currentList)
             submitList(newList)
-
-            when (selectionManager) {
-                is SingleSelectionManager -> {
-                    selectionManager.getSelection()?.let { dayItem -> monthViewClickListener.onSingleDayClick (dayItem) }
-                }
-
-                is MultipleSelectionManager -> {
-                    selectionManager.getSelection()?.let { dayItems -> monthViewClickListener.onMultipleDayClick(dayItems) }
-                }
-
-                is RangeSelectionManager -> {
-                    selectionManager.getSelection()?.let { dayItems -> monthViewClickListener.onRangeDayClick(dayItems) }
-                }
-            }
         }
     }
 

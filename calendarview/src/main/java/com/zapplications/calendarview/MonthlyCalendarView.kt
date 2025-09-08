@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.zapplications.calendarview.adapter.monthgrid.MonthGridAdapter
 import com.zapplications.calendarview.config.CalendarViewConfig
-import com.zapplications.calendarview.customview.MonthView
 import com.zapplications.calendarview.databinding.ViewMonthlyCalendarBinding
 import com.zapplications.calendarview.model.QuickSelectionButtonModel
 import com.zapplications.core.data.DayItem
@@ -16,7 +15,11 @@ import com.zapplications.core.extension.ifNull
 import com.zapplications.core.extension.isSameMonthOrAfter
 import com.zapplications.core.extension.isSameMonthOrBefore
 import com.zapplications.core.generator.CalendarGenerator
+import com.zapplications.core.selection.MultipleSelectionManager
+import com.zapplications.core.selection.RangeSelectionManager
+import com.zapplications.core.selection.SelectionListener
 import com.zapplications.core.selection.SelectionManager
+import com.zapplications.core.selection.SelectionType
 import com.zapplications.core.selection.SingleSelectionManager
 import com.zapplications.core.validator.DateValidator
 import kotlinx.datetime.Clock
@@ -32,7 +35,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : LinearLayout(context, attrs, defStyleAttr), MonthView.MonthViewClickListener {
+) : LinearLayout(context, attrs, defStyleAttr), SelectionListener {
 
     private val binding = ViewMonthlyCalendarBinding.inflate(LayoutInflater.from(context), this)
 
@@ -67,7 +70,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
         private set
 
     private var dateValidator: DateValidator? = null
-    private var selectionManager: SelectionManager<*> = SingleSelectionManager()
+    private var selectionManager: SelectionManager<*> = SingleSelectionManager(this)
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
 
@@ -164,8 +167,12 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
-    fun setSelectionManager(selectionManager: SelectionManager<*>): MonthlyCalendarView {
-        this.selectionManager = selectionManager
+    fun setSelectionType(selectionType: SelectionType): MonthlyCalendarView {
+        this.selectionManager = when (selectionType) {
+            SelectionType.SINGLE -> SingleSelectionManager(this)
+            SelectionType.RANGE -> RangeSelectionManager(this)
+            SelectionType.MULTIPLE -> MultipleSelectionManager(this)
+        }
         return this
     }
 
@@ -195,7 +202,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         monthAdapter.ifNull {
             binding.viewMonthGrid.setAdapterWithConfig(
                 calendarViewConfig = calendarViewConfig,
-                monthViewClickListener = this@MonthlyCalendarView,
                 selectionManager = selectionManager
             )
         }

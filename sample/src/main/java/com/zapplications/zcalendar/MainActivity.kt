@@ -7,7 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.zapplications.calendarview.MonthlyCalendarView
 import com.zapplications.calendarview.config.CalendarViewConfig
-import com.zapplications.core.selection.RangeSelectionManager
+import com.zapplications.core.selection.SelectionType
 import kotlinx.datetime.LocalDate
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             LocalDate(2025, 8, 5)
         )/*.setDateValidator(
             WeekdayValidator()
-        )*/.setSelectionManager(RangeSelectionManager()).buildCalendar()
+        )*/.setSelectionType(SelectionType.MULTIPLE).buildCalendar()
 
         rv.setOnDateSelectedListener {
             println("Selected date: $it")

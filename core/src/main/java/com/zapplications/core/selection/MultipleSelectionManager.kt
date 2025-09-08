@@ -2,7 +2,7 @@ package com.zapplications.core.selection
 
 import com.zapplications.core.data.DayItem
 
-class MultipleSelectionManager : SelectionManager<MutableSet<DayItem.Day>> {
+class MultipleSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<MutableSet<DayItem.Day>> {
     private val selectedPositions = mutableSetOf<Int>()
     private val selectedDays = mutableSetOf<DayItem.Day>()
 
@@ -17,7 +17,7 @@ class MultipleSelectionManager : SelectionManager<MutableSet<DayItem.Day>> {
 
             val updatedItem = date.copy(isSelected = false)
             mutableCurrentList[index] = updatedItem
-
+            selectionListener.onMultipleDayClick(selectedDays)
             return mutableCurrentList
         }
 
@@ -26,6 +26,8 @@ class MultipleSelectionManager : SelectionManager<MutableSet<DayItem.Day>> {
         val updatedItem = date.copy(isSelected = true)
         mutableCurrentList[index] = updatedItem
         selectedDays.add(updatedItem)
+
+        selectionListener.onMultipleDayClick(selectedDays)
         return mutableCurrentList
     }
 

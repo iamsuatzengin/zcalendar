@@ -3,7 +3,7 @@ package com.zapplications.core.selection
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
-class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>> {
+class RangeSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>> {
     private var selectedStartPosition: Int = NO_POSITION
     private var selectedEndPosition: Int = NO_POSITION
 
@@ -41,6 +41,7 @@ class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>>
         }
 
         selectedDateRange = selectedStartDay to selectedEndDay
+        selectedDateRange?.let { selectionListener.onRangeDayClick(it) }
         return newList
     }
 
