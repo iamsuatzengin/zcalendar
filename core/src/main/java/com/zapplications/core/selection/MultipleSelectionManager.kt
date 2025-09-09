@@ -3,7 +3,6 @@ package com.zapplications.core.selection
 import com.zapplications.core.data.DayItem
 
 class MultipleSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<MutableSet<DayItem.Day>> {
-    private val selectedPositions = mutableSetOf<Int>()
     private val selectedDays = mutableSetOf<DayItem.Day>()
 
     override fun onDaySelected(date: DayItem.Day, currentList: List<DayItem>): List<DayItem> {
@@ -31,8 +30,8 @@ class MultipleSelectionManager(override val selectionListener: SelectionListener
         return mutableCurrentList
     }
 
-    override fun setInitialPosition(position: Int) {
-        selectedPositions.ifEmpty { selectedPositions.add(position) }
+    override fun setInitialDay(day: DayItem.Day) {
+        selectedDays.add(day)
     }
 
     override fun getSelection(): MutableSet<DayItem.Day>? = selectedDays

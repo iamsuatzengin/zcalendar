@@ -123,7 +123,8 @@ class CalendarGeneratorTest {
         val days = calendarGenerator.getMonthDays(
             currentDate = dateModel,
             firstDayOfWeek = firstDayOfWeek,
-            minDate = LocalDate(2025, 4, 30)
+            minDate = LocalDate(2025, 4, 30),
+            isInitial = true
         )
 
         assertNotNull(days)

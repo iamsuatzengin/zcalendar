@@ -90,7 +90,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
             currentDate = previousDate
             binding.viewCalendarHeader.setNextButtonIsEnabled(true)
 
-            buildCalendar()
+            buildCalendar(isUserInteraction = true)
         }
         binding.viewCalendarHeader.onNextMonthClick {
             val nextDate = currentDate?.plus(1, DateTimeUnit.MONTH)
@@ -102,7 +102,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
             currentDate = nextDate
             binding.viewCalendarHeader.setPreviousButtonIsEnabled(true)
 
-            buildCalendar()
+            buildCalendar(isUserInteraction = true)
         }
     }
 
@@ -176,7 +176,7 @@ class MonthlyCalendarView @JvmOverloads constructor(
         return this
     }
 
-    fun buildCalendar() {
+    fun buildCalendar(isUserInteraction: Boolean = false) {
         setAdapter()
         setQuickLinkButtons()
         val daysOfWeeks = calendarGenerator.getDaysOfWeek(firstDayOfWeek = firstDayOfWeek)
@@ -192,8 +192,14 @@ class MonthlyCalendarView @JvmOverloads constructor(
             selectedDates = selectedDates,
             minDate = minDate,
             maxDate = maxDate,
-            dateValidator = dateValidator
+            dateValidator = dateValidator,
+            isInitial = !isUserInteraction
         )
+
+        (dayItems.firstOrNull { it is DayItem.Day && it.isSelected } as? DayItem.Day)?.let {
+            selectionManager.setInitialDay(it)
+            selectedDates.add(it.date)
+        }
 
         binding.viewMonthGrid.setCalendarList(dayItems)
     }

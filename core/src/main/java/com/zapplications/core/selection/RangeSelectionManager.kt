@@ -1,12 +1,8 @@
 package com.zapplications.core.selection
 
 import com.zapplications.core.data.DayItem
-import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
 class RangeSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>> {
-    private var selectedStartPosition: Int = NO_POSITION
-    private var selectedEndPosition: Int = NO_POSITION
-
     private var selectedStartDay: DayItem.Day? = null
     private var selectedEndDay: DayItem.Day? = null
 
@@ -47,8 +43,8 @@ class RangeSelectionManager(override val selectionListener: SelectionListener) :
 
     override fun getSelection(): Pair<DayItem.Day?, DayItem.Day?>? = selectedDateRange
 
-    override fun setInitialPosition(position: Int) {
-        selectedStartPosition = position
+    override fun setInitialDay(day: DayItem.Day) {
+        selectedStartDay = day
     }
 
     override fun isDayItemSelectable(item: DayItem): Boolean {

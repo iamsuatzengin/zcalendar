@@ -13,7 +13,7 @@ interface SelectionManager<T> {
     val selectionListener: SelectionListener
 
     fun onDaySelected(date: DayItem.Day, currentList: List<DayItem>): List<DayItem>
-    fun setInitialPosition(position: Int)
+    fun setInitialDay(day: DayItem.Day)
 
     fun getSelection(): T?
 

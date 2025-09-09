@@ -34,12 +34,9 @@ class MainActivity : AppCompatActivity() {
             )
         ).setMaxDate(
             LocalDate(2025, 10, 10)
-        ).setCurrentDate(
-            //Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-            LocalDate(2025, 8, 5)
         )/*.setDateValidator(
             WeekdayValidator()
-        )*/.setSelectionType(SelectionType.MULTIPLE).buildCalendar()
+        )*/.setSelectionType(SelectionType.RANGE).buildCalendar()
 
         rv.setOnDateSelectedListener {
             println("Selected date: $it")

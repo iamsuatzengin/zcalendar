@@ -4,7 +4,6 @@ import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
 class SingleSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<DayItem.Day> {
-    private var selectedPosition: Int = NO_POSITION
     private var selectedItem: DayItem.Day? = null
 
     override fun onDaySelected(
@@ -33,8 +32,8 @@ class SingleSelectionManager(override val selectionListener: SelectionListener) 
 
     override fun getSelection(): DayItem.Day? = selectedItem
 
-    override fun setInitialPosition(position: Int) {
-        selectedPosition = position
+    override fun setInitialDay(day: DayItem.Day) {
+        selectedItem = day
     }
 
     fun onDaySelectedByOldAndNewItem(oldItem: DayItem.Day?, newItem: DayItem.Day?, currentList: List<DayItem?>): List<DayItem?> {

@@ -70,6 +70,7 @@ class CalendarGenerator {
         firstDayOfWeek: DayOfWeek,
         minDate: LocalDate? = null,
         maxDate: LocalDate? = null,
+        isInitial: Boolean = false,
         selectedDates: List<LocalDate>? = null,
         dateValidator: DateValidator? = null,
         eventDates: Map<LocalDate, List<Event>>? = null
@@ -90,7 +91,11 @@ class CalendarGenerator {
             val checkMaxDate = !(maxDate != null && date > maxDate)
             val isEnabled = checkMinDate && checkMaxDate
             val events = eventDates?.get(date)
-            val isSelected = selectedDates?.contains(date) ?: (date == currentDate)
+            val isSelected = if(isInitial) {
+                currentDate == date
+            } else {
+                selectedDates?.contains(date) ?: (date == currentDate)
+            }
             dayGridItems.add(
                 DayItem.Day(
                     date = date,
