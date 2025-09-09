@@ -196,9 +196,11 @@ class MonthlyCalendarView @JvmOverloads constructor(
             isInitial = !isUserInteraction
         )
 
-        (dayItems.firstOrNull { it is DayItem.Day && it.isSelected } as? DayItem.Day)?.let {
-            selectionManager.setInitialDay(it)
-            selectedDates.add(it.date)
+        if (!isUserInteraction) {
+            (dayItems.firstOrNull { it is DayItem.Day && it.isSelected } as? DayItem.Day)?.let {
+                selectionManager.setInitialDay(it)
+                selectedDates.add(it.date)
+            }
         }
 
         binding.viewMonthGrid.setCalendarList(dayItems)

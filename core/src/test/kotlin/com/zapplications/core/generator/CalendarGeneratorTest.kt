@@ -271,4 +271,183 @@ class CalendarGeneratorTest {
 
         assertEquals(true, allMondayDaysIsDisable)
     }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return empty list when startDate is null`() {
+        // Given
+        val endDate = LocalDate(2023, 1, 5)
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(null, endDate)
+
+        // Then
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return empty list when endDate is null`() {
+        // Given
+        val startDate = LocalDate(2023, 1, 1)
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, null)
+
+        // Then
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return empty list when both dates are null`() {
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(null, null)
+
+        // Then
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return empty list when endDate is before startDate`() {
+        // Given
+        val startDate = LocalDate(2023, 1, 5)
+        val endDate = LocalDate(2023, 1, 1)
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return single date when startDate equals endDate`() {
+        // Given
+        val date = LocalDate(2023, 1, 1)
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(date, date)
+
+        // Then
+        assertEquals(1, result.size)
+        assertEquals(date, result.first())
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return correct dates for a valid range within the same month`() {
+        // Given
+        val startDate = LocalDate(2023, 1, 1)
+        val endDate = LocalDate(2023, 1, 5)
+        val expectedDates = listOf(
+            LocalDate(2023, 1, 1),
+            LocalDate(2023, 1, 2),
+            LocalDate(2023, 1, 3),
+            LocalDate(2023, 1, 4),
+            LocalDate(2023, 1, 5)
+        )
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedDates.size, result.size)
+        assertEquals(expectedDates, result)
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return correct dates for a valid range spanning across months`() {
+        // Given
+        val startDate = LocalDate(2023, 1, 30)
+        val endDate = LocalDate(2023, 2, 2)
+        val expectedDates = listOf(
+            LocalDate(2023, 1, 30),
+            LocalDate(2023, 1, 31),
+            LocalDate(2023, 2, 1),
+            LocalDate(2023, 2, 2)
+        )
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedDates.size, result.size)
+        assertEquals(expectedDates, result)
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return correct dates for a valid range spanning across years`() {
+        // Given
+        val startDate = LocalDate(2023, 12, 30)
+        val endDate = LocalDate(2024, 1, 2)
+        val expectedDates = listOf(
+            LocalDate(2023, 12, 30),
+            LocalDate(2023, 12, 31),
+            LocalDate(2024, 1, 1),
+            LocalDate(2024, 1, 2)
+        )
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedDates.size, result.size)
+        assertEquals(expectedDates, result)
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should handle leap year correctly when range includes February 29th`() {
+        // Given
+        val startDate = LocalDate(2024, 2, 27)
+        val endDate = LocalDate(2024, 3, 2)
+        val expectedDates = listOf(
+            LocalDate(2024, 2, 27),
+            LocalDate(2024, 2, 28),
+            LocalDate(2024, 2, 29), // Leap day
+            LocalDate(2024, 3, 1),
+            LocalDate(2024, 3, 2)
+        )
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedDates.size, result.size)
+        assertEquals(expectedDates, result)
+        assertTrue(result.contains(LocalDate(2024, 2, 29)))
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should handle non-leap year correctly when range includes February`() {
+        // Given
+        val startDate = LocalDate(2023, 2, 27)
+        val endDate = LocalDate(2023, 3, 2)
+        val expectedDates = listOf(
+            LocalDate(2023, 2, 27),
+            LocalDate(2023, 2, 28),
+            // No February 29th
+            LocalDate(2023, 3, 1),
+            LocalDate(2023, 3, 2)
+        )
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedDates.size, result.size)
+        assertEquals(expectedDates, result)
+    }
+
+    @Test
+    fun `getDatesBetweenRangeItems should return a large number of dates correctly`() {
+        // Given
+        val startDate = LocalDate(2023, 1, 1)
+        val endDate = LocalDate(2023, 12, 31) // Entire year 2023 (not a leap year)
+        val expectedSize = 365
+
+        // When
+        val result = calendarGenerator.getDatesBetweenRangeItems(startDate, endDate)
+
+        // Then
+        assertEquals(expectedSize, result.size)
+        assertEquals(startDate, result.first())
+        assertEquals(endDate, result.last())
+    }
 }
