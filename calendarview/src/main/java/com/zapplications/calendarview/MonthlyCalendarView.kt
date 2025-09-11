@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.core.view.isVisible
 import com.zapplications.calendarview.adapter.monthgrid.MonthGridAdapter
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.calendarview.databinding.ViewMonthlyCalendarBinding
-import com.zapplications.calendarview.model.QuickSelectionButtonModel
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.data.Event
 import com.zapplications.core.extension.ifNull
@@ -66,9 +64,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     val selectedDates: MutableList<LocalDate> = mutableListOf()
 
-    var quickSelectionButtons: List<QuickSelectionButtonModel>? = null
-        private set
-
     private var dateValidator: DateValidator? = null
     private var selectionManager: SelectionManager<*> = SingleSelectionManager(this)
 
@@ -114,7 +109,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
     fun setCalendarViewConfig(calendarViewConfig: CalendarViewConfig): MonthlyCalendarView {
         this.calendarViewConfig = calendarViewConfig
 
-        binding.clQuickSelectionBarLayout.isVisible = calendarViewConfig.showQuickSelectionBar
         return this
     }
 
@@ -154,14 +148,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         binding.viewCalendarHeader.currentYear = currentDate?.year
     }
 
-    fun setQuickSelectionButtons(quickSelectionButtons: List<QuickSelectionButtonModel>): MonthlyCalendarView {
-        check(quickSelectionButtons.size <= 3) {
-            "Quick selection buttons must not be more than 3"
-        }
-        this.quickSelectionButtons = quickSelectionButtons
-        return this
-    }
-
     fun setDateValidator(dateValidator: DateValidator): MonthlyCalendarView {
         this.dateValidator = dateValidator
         return this
@@ -178,7 +164,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     fun buildCalendar(isUserInteraction: Boolean = false) {
         setAdapter()
-        setQuickLinkButtons()
         val daysOfWeeks = calendarGenerator.getDaysOfWeek(firstDayOfWeek = firstDayOfWeek)
         binding.viewDaysOfWeekTitles.setDaysOfWeek(daysOfWeeks)
 
@@ -215,36 +200,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
         }
     }
 
-    private fun setQuickLinkButtons() {
-        if (binding.clQuickSelectionBarLayout.childCount > 1 && !calendarViewConfig.showQuickSelectionBar) return
-
-        binding.clQuickSelectionBarLayout.setQuickSelectionButtons(
-            buttons = quickSelectionButtons ?: getDefaultQuickSelectionButtons(),
-            textColor = R.color.color_day_grid_item,
-            backgroundColor = R.color.color_calendar_quick_selection_bar_bg,
-            action = {
-                setSelectedDateAfterQuickSelection(it)
-            }
-        )
-    }
-
-    private fun setSelectedDateAfterQuickSelection(date: LocalDate) {
-//        val oldSelectedDate = selectedDate
-//        selectedDate = selectedDate?.copy(
-//            date = date,
-//            dayOfMonth = date.dayOfMonth,
-//            isSelected = true
-//        )
-//
-//        if (currentDate?.month != date.month) {
-//            currentDate = selectedDate?.date
-//            buildCalendar()
-//        } else {
-//            currentDate = selectedDate?.date
-//            monthAdapter?.handleOnSelectItem(oldSelectedDate, selectedDate)
-//        }
-    }
-
     override fun onSingleDayClick(dayItem: DayItem.Day) {
         selectedDates.clear()
         selectedDates.add(dayItem.date)
@@ -277,21 +232,6 @@ class MonthlyCalendarView @JvmOverloads constructor(
 
     private fun getLocalCurrentDate(): LocalDate =
         Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-
-    private fun getDefaultQuickSelectionButtons(): List<QuickSelectionButtonModel> = listOf(
-        QuickSelectionButtonModel(
-            title = context.getString(R.string.button_text_quick_selection_bar_today),
-            onClick = { getLocalCurrentDate() }
-        ),
-        QuickSelectionButtonModel(
-            title = context.getString(R.string.button_text_quick_selection_bar_tomorrow),
-            onClick = { getLocalCurrentDate().plus(1, DateTimeUnit.DAY) }
-        ),
-        QuickSelectionButtonModel(
-            title = context.getString(R.string.button_text_quick_selection_bar_next_week),
-            onClick = { getLocalCurrentDate().plus(1, DateTimeUnit.WEEK) }
-        ),
-    )
 
     fun interface OnDateSelectedListener {
         fun onDateSelected(date: DayItem.Day)

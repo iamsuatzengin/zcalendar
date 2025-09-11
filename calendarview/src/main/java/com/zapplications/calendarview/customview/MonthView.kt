@@ -45,6 +45,7 @@ class MonthView @JvmOverloads constructor(
         }
     }
 
+    // TODO: Improve this function. Handle child height nullability. If childHeight returns null, set default height.
     private fun updateHeight() {
         val currentList = monthGridAdapter?.currentList
         val childHeight = layoutManager?.getChildAt(
