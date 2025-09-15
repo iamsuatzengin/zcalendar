@@ -1,13 +1,17 @@
 package com.zapplications.zcalendar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
 import com.zapplications.calendarview.MonthlyCalendarView
 import com.zapplications.calendarview.config.CalendarViewConfig
 import com.zapplications.core.selection.SelectionType
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 class MainActivity : AppCompatActivity() {
@@ -38,8 +42,14 @@ class MainActivity : AppCompatActivity() {
             WeekdayValidator()
         )*/.setSelectionType(SelectionType.RANGE).buildCalendar()
 
-        rv.setOnDateSelectedListener {
-            println("Selected date: $it")
+        lifecycleScope.launch {
+            rv.selectedDatesStateFlow.collect {
+                Log.i("MainActivity - StateFlow", "Selected dates: $it")
+            }
+        }
+
+        findViewById<MaterialButton>(R.id.btnGetSelectedDates).setOnClickListener {
+            Log.i("MainActivity - Button", "Selected dates: ${rv.selectedDates}")
         }
     }
 }
