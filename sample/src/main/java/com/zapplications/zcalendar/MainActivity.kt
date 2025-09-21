@@ -1,17 +1,13 @@
 package com.zapplications.zcalendar
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
-import com.zapplications.calendarview.MonthlyCalendarView
+import com.zapplications.calendarview.bottomsheet.builder.MonthlyCalendarBuilder
 import com.zapplications.calendarview.config.CalendarViewConfig
-import com.zapplications.core.selection.SelectionType
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 class MainActivity : AppCompatActivity() {
@@ -29,27 +25,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initMonthlyCalendarView() {
-        val rv = findViewById<MonthlyCalendarView>(R.id.viewMonthlyCalendar)
-
-        rv.setCalendarViewConfig(
-            CalendarViewConfig(
-                disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
-                showQuickSelectionBar = false
-            )
-        ).setMaxDate(
-            LocalDate(2025, 10, 10)
-        )/*.setDateValidator(
-            WeekdayValidator()
-        )*/.setSelectionType(SelectionType.RANGE).buildCalendar()
-
-        lifecycleScope.launch {
-            rv.selectedDatesStateFlow.collect {
-                Log.i("MainActivity - StateFlow", "Selected dates: $it")
-            }
-        }
-
         findViewById<MaterialButton>(R.id.btnGetSelectedDates).setOnClickListener {
-            Log.i("MainActivity - Button", "Selected dates: ${rv.selectedDates}")
+            MonthlyCalendarBuilder.multiple()
+                .setCalendarViewConfig(
+                    CalendarViewConfig(
+                        disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
+                        showQuickSelectionBar = false
+                    )
+                )
+                .maxDate(LocalDate(2025, 10, 10))
+                .build()
+                .show(supportFragmentManager, "MonthlyCalendarSheet")
         }
     }
 }

@@ -2,11 +2,12 @@ package com.zapplications.core.selection
 
 import com.zapplications.core.data.DayItem
 
-class RangeSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>> {
+class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>> {
     private var selectedStartDay: DayItem.Day? = null
     private var selectedEndDay: DayItem.Day? = null
 
     private var selectedDateRange: Pair<DayItem.Day?, DayItem.Day?>? = null
+    override var selectionListener: SelectionListener? = null
 
     override fun onDaySelected(
         date: DayItem.Day,
@@ -37,7 +38,7 @@ class RangeSelectionManager(override val selectionListener: SelectionListener) :
         }
 
         selectedDateRange = selectedStartDay to selectedEndDay
-        selectedDateRange?.let { selectionListener.onRangeDayClick(it) }
+        selectedDateRange?.let { selectionListener?.onRangeDayClick(it) }
         return newList
     }
 

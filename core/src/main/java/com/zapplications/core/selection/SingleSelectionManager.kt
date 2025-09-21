@@ -3,8 +3,9 @@ package com.zapplications.core.selection
 import com.zapplications.core.data.DayItem
 import com.zapplications.core.selection.SelectionManager.Companion.NO_POSITION
 
-class SingleSelectionManager(override val selectionListener: SelectionListener) : SelectionManager<DayItem.Day> {
+class SingleSelectionManager : SelectionManager<DayItem.Day> {
     private var selectedItem: DayItem.Day? = null
+    override var selectionListener: SelectionListener? = null
 
     override fun onDaySelected(
         date: DayItem.Day,
@@ -26,7 +27,7 @@ class SingleSelectionManager(override val selectionListener: SelectionListener) 
 
         selectedItem = date
 
-        selectedItem?.let { selectionListener.onSingleDayClick(it) }
+        selectedItem?.let { selectionListener?.onSingleDayClick(it) }
         return newList
     }
 
