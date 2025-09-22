@@ -52,4 +52,8 @@ class SingleSelectionManager : SelectionManager<DayItem.Day> {
 
     private fun getDayItemPosition(item: DayItem.Day?, currentList: List<DayItem?>) =
         currentList.indexOfFirst { it is DayItem.Day && it.date == item?.date && it.dayOfMonth == item.dayOfMonth }
+
+    override fun clearSelection() {
+        selectedItem = null
+    }
 }

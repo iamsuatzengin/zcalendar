@@ -1,7 +1,6 @@
 package com.zapplications.calendarview.bottomsheet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,12 @@ import com.zapplications.calendarview.bottomsheet.builder.MonthlyCalendarBuilder
 import com.zapplications.calendarview.databinding.BottomSheetMonthlyCalendarBinding
 import com.zapplications.calendarview.viewmodel.CalendarViewModel
 import com.zapplications.core.generator.CalendarGenerator
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+
+fun interface SelectedDateListener {
+    fun onDaySelected(date: List<LocalDate>)
+}
 
 class MonthlyCalendarSheet<T> : BottomSheetDialogFragment(), MonthlyCalendarView.CalendarActionListener {
 
@@ -24,9 +26,7 @@ class MonthlyCalendarSheet<T> : BottomSheetDialogFragment(), MonthlyCalendarView
     private val binding get() = _binding!!
     private var options: MonthlyCalendarBuilder<T>? = null
     private var calendarViewModel: CalendarViewModel? = null
-
-    val selectedDatesStateFlow: StateFlow<List<LocalDate>>
-        get() = calendarViewModel!!.selectedDatesStateFlow // TODO (!!) ifadesini değerlendir
+    private var selectedDateListener: SelectedDateListener? = null
 
     val selectedDates: List<LocalDate> get() = calendarViewModel?.selectedDates.orEmpty()
 
@@ -52,7 +52,7 @@ class MonthlyCalendarSheet<T> : BottomSheetDialogFragment(), MonthlyCalendarView
 
         lifecycleScope.launch {
             calendarViewModel?.selectedDatesStateFlow?.collect {
-                Log.i("MonthlyCalendarSheet - StateFlow", "Selected dates: $it")
+                selectedDateListener?.onDaySelected(it)
             }
         }
     }
@@ -92,6 +92,10 @@ class MonthlyCalendarSheet<T> : BottomSheetDialogFragment(), MonthlyCalendarView
         }
     }
 
+    fun selectedDateListener(listener: SelectedDateListener) {
+        selectedDateListener = listener
+    }
+
     override fun onPreviousMonthClick() {
         calendarViewModel?.onPreviousMonthClick()
     }
@@ -104,5 +108,6 @@ class MonthlyCalendarSheet<T> : BottomSheetDialogFragment(), MonthlyCalendarView
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        options?.selectionManager?.clearSelection()
     }
 }

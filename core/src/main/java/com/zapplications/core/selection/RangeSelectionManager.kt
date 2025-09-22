@@ -54,4 +54,10 @@ class RangeSelectionManager : SelectionManager<Pair<DayItem.Day?, DayItem.Day?>>
 
     fun isStartDate(dayItem: DayItem?) = (dayItem as? DayItem.Day)?.date == selectedStartDay?.date
     fun isEndDate(dayItem: DayItem?) = (dayItem as? DayItem.Day)?.date == selectedEndDay?.date
+
+    override fun clearSelection() {
+        selectedStartDay = null
+        selectedEndDay = null
+        selectedDateRange = null
+    }
 }

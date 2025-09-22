@@ -1,6 +1,7 @@
 package com.zapplications.zcalendar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,17 +26,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initMonthlyCalendarView() {
-        findViewById<MaterialButton>(R.id.btnGetSelectedDates).setOnClickListener {
-            MonthlyCalendarBuilder.multiple()
-                .setCalendarViewConfig(
-                    CalendarViewConfig(
-                        disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
-                        showQuickSelectionBar = false
-                    )
+        val calendarSheet = MonthlyCalendarBuilder.single()
+            .setCalendarViewConfig(
+                CalendarViewConfig(
+                    disabledTextColor = com.zapplications.calendarview.R.color.color_disabled_text_red,
+                    showQuickSelectionBar = false
                 )
-                .maxDate(LocalDate(2025, 10, 10))
-                .build()
-                .show(supportFragmentManager, "MonthlyCalendarSheet")
+            )
+            .maxDate(LocalDate(2025, 10, 10))
+            .build()
+
+        calendarSheet.selectedDateListener {
+            Log.e("MainActivity", "Selected date: $it")
+        }
+
+        findViewById<MaterialButton>(R.id.btnGetSelectedDates).setOnClickListener {
+            calendarSheet.show(supportFragmentManager, "MonthlyCalendarSheet")
         }
     }
 }

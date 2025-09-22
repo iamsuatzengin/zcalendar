@@ -36,4 +36,8 @@ class MultipleSelectionManager : SelectionManager<Set<DayItem.Day>> {
     }
 
     override fun getSelection(): Set<DayItem.Day>? = selectedDays.toSet()
+
+    override fun clearSelection() {
+        selectedDays.clear()
+    }
 }

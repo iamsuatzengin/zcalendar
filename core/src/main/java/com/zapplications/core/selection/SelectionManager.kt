@@ -21,6 +21,8 @@ interface SelectionManager<T> {
             && item.isEnabled
             && !item.isSelected
 
+    fun clearSelection()
+
     companion object {
         const val NO_POSITION = -1
     }
