@@ -32,7 +32,7 @@ jobs:
           echo "Publishing the Library 🚀"
           VERSION=${{ github.event.inputs.versionName }}
           echo "Version name $VERSION"
-          ./gradlew publishAndReleaseToMavenCentral -PlibraryVersion=VERSION --no-configuration-cache
+          ./gradlew publishAndReleaseToMavenCentral -PlibraryVersion=$VERSION --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }}
