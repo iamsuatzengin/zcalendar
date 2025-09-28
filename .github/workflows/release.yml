@@ -28,7 +28,7 @@ jobs:
       - name: Publish Library to Maven Central
         run: |
           echo "Publishing the Library 🚀"
-          VERSION = ${{ github.event.inputs.versionName }}
+          VERSION=${{ github.event.inputs.versionName }}
           echo "Version name $VERSION"
           ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
         env:
