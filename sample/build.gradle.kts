@@ -36,8 +36,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":calendarview"))
-    implementation(project(":core"))
+    implementation("io.github.iamsuatzengin:calendarview:1.0.0-alpha7")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
