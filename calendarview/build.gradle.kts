@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
-version = "1.0.0-alpha7"
+version = project.findProperty("libraryVersion") ?: "1.0.0-alpha7"
 
 android {
     namespace = "com.zapplications.calendarview"
