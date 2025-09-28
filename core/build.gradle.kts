@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
+
+version = "1.0.0-alpha7"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -23,7 +26,7 @@ afterEvaluate {
         coordinates(
             groupId = "io.github.iamsuatzengin",
             artifactId = "core",
-            version = "1.0.0-alpha7"
+            version = project.version.toString()
         )
 
         pom {
