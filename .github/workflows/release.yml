@@ -28,6 +28,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Gradle tasks
+        run: ./gradlew tasks
+
       - name: Publish Library to Maven Central
         run: |
           echo "Publishing the Library 🚀"
