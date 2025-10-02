@@ -1,10 +1,10 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
-    id("com.vanniktech.maven.publish") version "0.34.0"
+    alias(libs.plugins.mavenPublishing)
 }
 
-version = project.findProperty("libraryVersion") ?: "1.0.0-alpha7"
+version = project.findProperty("libraryVersion") ?: "1.0.0-alpha12"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
