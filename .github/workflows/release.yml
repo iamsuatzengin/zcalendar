@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       versionName:
-        description: "Please, enter a version name"
+        description: "Please, enter a version name. (Version name cannot contain -SNAPSHOT)"
         required: true
 
 jobs:
@@ -31,6 +31,12 @@ jobs:
       - name: Gradle tasks
         run: ./gradlew tasks
 
+      - name: Check Version Name
+        if: contains(github.event.inputs.versionName, '-SNAPSHOT')
+        run: |
+          echo "⚠️ ERROR: SNAPSHOT versions cannot be published via this workflow!"
+          exit 1
+
       - name: Publish Library to Maven Central
         run: |
           echo "Publishing the Library 🚀"
@@ -43,3 +49,22 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+
+      - name: Create tag
+        run: |
+          git config --local user.email "zenginsuat.inf@gmail.com"
+          git config --local user.name "Suat Zengin"
+          git tag -a "v${{ github.event.inputs.versionName }}" -m "Release ${{ github.event.inputs.versionName }}"
+          git push origin "v${{ github.event.inputs.versionName }}"
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ github.event.inputs.versionName }}"
+          release_name: "Release v${{ github.event.inputs.versionName }}"
+          body: |
+            ## 🎉 Version ${{ github.event.inputs.versionName }}
+          draft: false
+          prerelease: false
