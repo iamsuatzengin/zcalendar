@@ -3,8 +3,12 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.iamsuatzengin/calendarview.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:io.github.zapplications%20AND%20a:calendarview)
 
 `ZCalendar` is a modern and highly customizable calendar and date picker library designed for your Android applications. Developed in Kotlin with modern Android development practices in mind.
-
 <br>
+
+### Screenshot - range selection
+![ZCalendar Demo](https://github.com/iamsuatzengin/zcalendar/blob/main/rangeSelection.png)
+
+
 
 ## ✨ Features
 
